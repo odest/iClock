@@ -1,0 +1,85 @@
+{
+    "config": null,
+    "default": {
+        "window": {
+            "height": null,
+            "width": null,
+            "showToolTips": null,
+            "staysOnTop": null,
+            "showOnTaskbar": null,
+            "isOpenEditMenu": null,
+            "advancedOptions": null
+        },
+        "background": {
+            "type": null,
+            "gif": null,
+            "image": null,
+            "color": null,
+            "opacity": null,
+            "borderRadius": null,
+            "borderSize": null,
+            "borderOpacity": null,
+            "borderColor": null,
+            "animation": null,
+            "animationCounter": null,
+            "animationDuration": null
+        },
+        "text": {
+            "blinkingColonAnimation": null,
+            "blinkingColonVisibility": null,
+            "color": null,
+            "opacity": null,
+            "xCoord": null,
+            "yCoord": null,
+            "font": null,
+            "fontFamily": null,
+            "clockFontSize": null,
+            "dateFontSize": null,
+            "fontPath": null,
+            "iconPath": null,
+            "iconSize": null,
+            "iconColor": null
+        }
+    },
+    "custom": {
+        "window": {
+            "height": null,
+            "width": null,
+            "showToolTips": null,
+            "staysOnTop": null,
+            "showOnTaskbar": null,
+            "isOpenEditMenu": null,
+            "advancedOptions": null
+        },
+        "background": {
+            "type": null,
+            "gif": null,
+            "image": null,
+            "color": null,
+            "opacity": null,
+            "borderRadius": null,
+            "borderSize": null,
+            "borderOpacity": null,
+            "borderColor": null,
+            "animation": null,
+            "animationCounter": null,
+            "animationDuration": null
+        },
+        "text": {
+            "blinkingColonAnimation": null,
+            "blinkingColonVisibility": null,
+            "color": null,
+            "opacity": null,
+            "xCoord": null,
+            "yCoord": null,
+            "font": null,
+            "fontFamily": null,
+            "clockFontSize": null,
+            "dateFontSize": null,
+            "fontPath": null,
+            "iconPath": null,
+            "iconSize": null,
+            "iconColor": null
+        }
+    }
+}
