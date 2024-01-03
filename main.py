@@ -30,7 +30,10 @@ class MainWindow(QMainWindow):
         self.windowWidth = self.configData[self.user]["window"]["width"]
 
         self.backgroundType = self.configData[self.user]["background"]["type"]
-        self.backgroundGif = self.configData[self.user]["background"]["gif"]
+        self.backgroundNormalGif = self.configData[self.user]["background"]["gif"]["normal"]
+        self.backgroundBlurGif = self.configData[self.user]["background"]["gif"]["blur"]
+        self.backgroundTopGif = self.configData[self.user]["background"]["gif"]["top"]
+        self.backgroundGifPath = self.configData[self.user]["background"]["gif"]["path"]
         self.backgroundNormalImage = self.configData[self.user]["background"]["image"]["normal"]
         self.backgroundBlurImage = self.configData[self.user]["background"]["image"]["blur"]
         self.backgroundTopImage = self.configData[self.user]["background"]["image"]["top"]

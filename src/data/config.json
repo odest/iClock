@@ -1,85 +1,267 @@
 {
-    "config": null,
+    "config": "default",
     "default": {
         "window": {
-            "height": null,
-            "width": null,
-            "showToolTips": null,
-            "staysOnTop": null,
-            "showOnTaskbar": null,
-            "isOpenEditMenu": null,
-            "advancedOptions": null
+            "height": 150,
+            "width": 266,
+            "showToolTips": true,
+            "staysOnTop": false,
+            "showOnTaskbar": true,
+            "isOpenEditMenu": false,
+            "advancedOptions": false
         },
         "background": {
-            "type": null,
-            "gif": null,
-            "image": null,
-            "color": null,
-            "opacity": null,
-            "borderRadius": null,
-            "borderSize": null,
-            "borderOpacity": null,
-            "borderColor": null,
-            "animation": null,
-            "animationCounter": null,
-            "animationDuration": null
+            "type": "Image",
+            "gif": {
+                "normal": "frames/",
+                "blur": "blur.jpg",
+                "top": "top.png",
+                "path": "src/assets/gifs/default/"
+            },
+            "image": {
+                "normal": "car.jpg",
+                "blur": "carBlur.jpg",
+                "top": "carTop.png",
+                "path": "src/assets/images/default/"
+            },
+            "color": [
+                0,
+                0,
+                127,
+                255
+            ],
+            "opacity": 100,
+            "borderRadius": 16,
+            "borderSize": 3,
+            "borderOpacity": 100,
+            "borderColor": {
+                "Gif": [
+                    0,
+                    0,
+                    127,
+                    255
+                ],
+                "Image": [
+                    255,
+                    0,
+                    0,
+                    255
+                ],
+                "Color": [
+                    0,
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "animation": true,
+            "animationCounter": 1,
+            "animationDuration": 25
         },
         "text": {
-            "blinkingColonAnimation": null,
-            "blinkingColonVisibility": null,
-            "color": null,
-            "opacity": null,
-            "xCoord": null,
-            "yCoord": null,
-            "font": null,
-            "fontFamily": null,
-            "clockFontSize": null,
-            "dateFontSize": null,
-            "fontPath": null,
-            "iconPath": null,
-            "iconSize": null,
-            "iconColor": null
+            "blinkingColonAnimation": false,
+            "blinkingColonVisibility": true,
+            "color": {
+                "Gif": [
+                    0,
+                    0,
+                    127,
+                    255
+                ],
+                "Image": [
+                    255,
+                    0,
+                    0,
+                    255
+                ],
+                "Color": [
+                    0,
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "opacity": 100,
+            "xCoord": 0,
+            "yCoord": 0,
+            "font": "DS-DIGIB.TTF",
+            "fontFamily": "DS-Digital",
+            "clockFontSize": 50,
+            "dateFontSize": 20,
+            "fontPath": "src/assets/fonts/",
+            "iconPath": "src/assets/icons/",
+            "iconSize": [
+                20,
+                20
+            ],
+            "iconColor": {
+                "normal": {
+                    "Gif": [
+                        0,
+                        0,
+                        127
+                    ],
+                    "Image": [
+                        255,
+                        255,
+                        255
+                    ],
+                    "Color": [
+                        255,
+                        255,
+                        255
+                    ]
+                },
+                "hover": {
+                    "Gif": [
+                        0,
+                        255,
+                        255
+                    ],
+                    "Image": [
+                        0,
+                        255,
+                        255
+                    ],
+                    "Color": [
+                        0,
+                        255,
+                        255
+                    ]
+                }
+            }
         }
     },
     "custom": {
         "window": {
-            "height": null,
-            "width": null,
-            "showToolTips": null,
-            "staysOnTop": null,
-            "showOnTaskbar": null,
-            "isOpenEditMenu": null,
-            "advancedOptions": null
+            "height": 150,
+            "width": 266,
+            "showToolTips": true,
+            "staysOnTop": false,
+            "showOnTaskbar": true,
+            "isOpenEditMenu": false,
+            "advancedOptions": false
         },
         "background": {
-            "type": null,
-            "gif": null,
-            "image": null,
-            "color": null,
-            "opacity": null,
-            "borderRadius": null,
-            "borderSize": null,
-            "borderOpacity": null,
-            "borderColor": null,
-            "animation": null,
-            "animationCounter": null,
-            "animationDuration": null
+            "type": "Image",
+            "gif": {
+                "normal": "frames/",
+                "blur": "blur.jpg",
+                "top": "top.png",
+                "path": "src/assets/gifs/default/"
+            },
+            "image": {
+                "normal": "car.jpg",
+                "blur": "carBlur.jpg",
+                "top": "carTop.png",
+                "path": "src/assets/images/default/"
+            },
+            "color": [
+                0,
+                0,
+                127,
+                255
+            ],
+            "opacity": 100,
+            "borderRadius": 16,
+            "borderSize": 3,
+            "borderOpacity": 100,
+            "borderColor": {
+                "Gif": [
+                    0,
+                    0,
+                    127,
+                    255
+                ],
+                "Image": [
+                    255,
+                    0,
+                    0,
+                    255
+                ],
+                "Color": [
+                    0,
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "animation": true,
+            "animationCounter": 1,
+            "animationDuration": 25
         },
         "text": {
-            "blinkingColonAnimation": null,
-            "blinkingColonVisibility": null,
-            "color": null,
-            "opacity": null,
-            "xCoord": null,
-            "yCoord": null,
-            "font": null,
-            "fontFamily": null,
-            "clockFontSize": null,
-            "dateFontSize": null,
-            "fontPath": null,
-            "iconPath": null,
-            "iconSize": null,
-            "iconColor": null
+            "blinkingColonAnimation": false,
+            "blinkingColonVisibility": true,
+            "color": {
+                "Gif": [
+                    0,
+                    0,
+                    127,
+                    255
+                ],
+                "Image": [
+                    255,
+                    0,
+                    0,
+                    255
+                ],
+                "Color": [
+                    0,
+                    255,
+                    255,
+                    255
+                ]
+            },
+            "opacity": 100,
+            "xCoord": 0,
+            "yCoord": 0,
+            "font": "DS-DIGIB.TTF",
+            "fontFamily": "DS-Digital",
+            "clockFontSize": 50,
+            "dateFontSize": 20,
+            "fontPath": "src/assets/fonts/",
+            "iconPath": "src/assets/icons/",
+            "iconSize": [
+                20,
+                20
+            ],
+            "iconColor": {
+                "normal": {
+                    "Gif": [
+                        0,
+                        0,
+                        127
+                    ],
+                    "Image": [
+                        255,
+                        255,
+                        255
+                    ],
+                    "Color": [
+                        255,
+                        255,
+                        255
+                    ]
+                },
+                "hover": {
+                    "Gif": [
+                        0,
+                        255,
+                        255
+                    ],
+                    "Image": [
+                        0,
+                        255,
+                        255
+                    ],
+                    "Color": [
+                        0,
+                        255,
+                        255
+                    ]
+                }
+            }
         }
     }
 }

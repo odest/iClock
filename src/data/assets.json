@@ -1,6 +1,86 @@
 {
-    "fonts": null,
-    "gifs": null,
-    "images": null,
-    "icons": null
+    "fonts": {
+        "DS-Digital": {
+            "font": {
+                "name": "DS-Digital",
+                "types": ["TrueType"],
+                "styles": ["Normal", "Bold", "Italic", "Bold Italic"],
+                "link": "https://www.dafont.com/ds-digital.font",
+                "version": "1.0",
+                "extensions": [".TTF"]
+            },
+            "author": {
+                "name": "Dusit Supasawat",
+                "webSite": "http://ds-font.hypermart.net",
+                "mail": "dusit@mailcity.com"
+            },
+            "license": {
+                "name": "Freeware, Non-Commercial",
+                "link": null,
+                "path": null,
+                "version": null
+            }
+        },
+        "Typefesse": {
+            "font": {
+                "name": "Typefesse",
+                "types": ["OpenType"],
+                "styles": ["Normal"],
+                "link": "https://velvetyne.fr/fonts/typefesse/",
+                "version": "v0.1",
+                "extensions": [".otf", ".eot", ".woff", ".woff2"]
+            },
+            "author": {
+                "name": "Océane Juvin",
+                "webSite": "https://www.behance.net/oceane-jd737",
+                "mail": "http://oceane-j@laposte.net"
+            },
+            "license": {
+                "name": "SIL Open Font License",
+                "link": "http://scripts.sil.org/",
+                "path": "src/assets/fonts/licenses/Typefesse_SIL.txt",
+                "version": "v1.1"
+            }
+        }
+    },
+    "gifs": {
+        "lennsan": {
+            "gif": {
+                "name": "lennsan",
+                "link": "https://lennsan.tumblr.com/image/157438772656",
+                "license": null
+            },
+            "author": {
+                "name": "Lennart Butz",
+                "webSite": "https://lennartbutz.artstation.com/",
+                "mail": "lennart.h.butz@gmail.com"
+            }
+        }
+    },
+    "images": {
+        "car": {
+            "image": {
+                "name": "car",
+                "link": "https://www.wsupercars.com/car-wallpaper-download/?title=2023%20Porsche%20911%20GT3%20R%20Rennsport&res=2800%20x%202100&pic=https://www.wsupercars.com/wallpapers-regular/Porsche/2023-Porsche-911-GT3-R-Rennsport-004-2100.jpg",
+                "license": null
+            },
+            "author": {
+                "name": "W Supercars",
+                "webSite": "https://www.wsupercars.com/",
+                "mail": null
+            }
+        }
+    },
+    "icons": {
+        "svg":{
+            "name": "icon",
+            "link": "https://feathericons.com/",
+            "license": null
+        },
+        "png":{
+            "name": "icon",
+            "link": "https://www.flaticon.com/",
+            "license": null
+        }
+    }
 }
