@@ -11,7 +11,7 @@
             "advancedOptions": false
         },
         "background": {
-            "type": "Image",
+            "type": "Gif",
             "gif": {
                 "normal": "frames/",
                 "blur": "blur.jpg",
@@ -56,7 +56,8 @@
             },
             "animation": true,
             "animationCounter": 1,
-            "animationDuration": 25
+            "animationDuration": 25,
+            "frameCount": 200
         },
         "text": {
             "blinkingColonAnimation": false,
