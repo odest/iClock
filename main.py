@@ -1,6 +1,8 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QHBoxLayout, QLabel
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QHBoxLayout, QLabel, QSizeGrip
 from PyQt5.QtGui import QFontDatabase, QFont
-from PyQt5.QtCore import Qt, QTimer, QTime
+from PyQt5.QtCore import Qt, QTimer, QTime, QRect
+
+from src import SideGrip
 
 from datetime import datetime
 import json
@@ -69,10 +71,13 @@ class MainWindow(QMainWindow):
         self.iconNormalColor = tuple(self.configData[self.user]["text"]["iconColor"]["normal"][self.backgroundType])
         self.iconHoverColor = tuple(self.configData[self.user]["text"]["iconColor"]["hover"][self.backgroundType])
         self.editMenu = None
+        self._gripSize = 8
 
 
     def initWindow(self):
         """ initialize window """
+        self.setWindowFlag(Qt.FramelessWindowHint)
+        self.setAttribute(Qt.WA_TranslucentBackground)
         screenSize = QApplication.desktop().availableGeometry()
         x = int((screenSize.width() / 2) - (self.windowWidth / 2))
         y = int(screenSize.height() / 3)
@@ -141,6 +146,10 @@ class MainWindow(QMainWindow):
         self.clockTimer = QTimer(self)
         self.clockTimer.timeout.connect(self.updateTime)
         self.clockTimer.start(500)
+
+        self.sideGrips = [SideGrip(self, Qt.LeftEdge), SideGrip(self, Qt.TopEdge), SideGrip(self, Qt.RightEdge), SideGrip(self, Qt.BottomEdge), ]
+        self.cornerGrips = [QSizeGrip(self) for i in range(4)]
+        [self.cornerGrips[i].setStyleSheet("background-color: transparent;") for i in range(4)]
 
 
     def setWidgets(self):
@@ -236,6 +245,78 @@ class MainWindow(QMainWindow):
             self.blinkingColonText.setText("")
             self.clockText.setStyleSheet(f'background-color: transparent; color: rgba{self.textColor};')
             self.clockText.setText(f"{hour}:{minute}")
+
+
+    def updateGrips(self):
+        self.setContentsMargins(*[self._gripSize] * 4)
+
+        outRect = self.rect()
+        inRect = outRect.adjusted(self._gripSize, self._gripSize,
+            -self._gripSize, -self._gripSize)
+
+        self.cornerGrips[0].setGeometry(
+            QRect(outRect.topLeft(), inRect.topLeft()))
+        self.cornerGrips[1].setGeometry(
+            QRect(outRect.topRight(), inRect.topRight()).normalized())
+        self.cornerGrips[2].setGeometry(
+            QRect(inRect.bottomRight(), outRect.bottomRight()))
+        self.cornerGrips[3].setGeometry(
+            QRect(outRect.bottomLeft(), inRect.bottomLeft()).normalized())
+
+        self.sideGrips[0].setGeometry(
+            0, inRect.top(), self._gripSize, inRect.height())
+        self.sideGrips[1].setGeometry(
+            inRect.left(), 0, inRect.width(), self._gripSize)
+        self.sideGrips[2].setGeometry(
+            inRect.left() + inRect.width(), 
+            inRect.top(), self._gripSize, inRect.height())
+        self.sideGrips[3].setGeometry(
+            self._gripSize, inRect.top() + inRect.height(), 
+            inRect.width(), self._gripSize)
+
+
+    def resizeEvent(self, event):
+        QMainWindow.resizeEvent(self, event)
+        
+        self.updateGrips()
+
+        self.windowHeight, self.windowWidth = event.size().height(), event.size().width()
+
+        self.backgroundLayer.resize(event.size())
+        self.backgroundLayer.setScaledContents(True)
+
+        self.topLayer.resize(event.size())
+        self.topLayer.setScaledContents(True)
+
+        self.borderLayer.resize(event.size())
+        self.borderLayer.setScaledContents(True)
+
+        self.clockFontSize = max(8, min(self.clockText.width() // 5, self.clockText.height() // 3))
+        self.clockFont = QFont(self.fontFamily, self.clockFontSize)
+        self.clockText.resize(event.size())
+        self.clockText.setScaledContents(True)
+        self.clockText.setFont(self.clockFont)
+
+        self.blinkingColonText.resize(event.size())
+        self.blinkingColonText.setScaledContents(True)
+        self.blinkingColonText.setFont(self.clockFont)
+
+        self.dateFontSize = max(8, min(self.dateText.width() // 20, self.dateText.height() // 3))
+        self.dateFont = QFont(self.fontFamily, self.dateFontSize)
+        self.dateText.resize(event.size())
+        self.dateText.setScaledContents(True)
+        self.dateText.setFont(self.dateFont)
+
+        buttonWidth = event.size().width() / 10
+        buttonHeight = event.size().height() / 10
+
+        buttonSize = int((buttonWidth + buttonHeight) / 2)
+        self.iconSize = [buttonSize, buttonSize]
+
+        for button in self.buttons:
+            button.setFixedSize(buttonSize, buttonSize)
+
+        self.buttonLayout.setContentsMargins(10, int(event.size().height() / 1.5), 10, 10)
 
 
     def __loadConfigData(self):
