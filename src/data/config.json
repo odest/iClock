@@ -2,8 +2,20 @@
     "config": "default",
     "default": {
         "window": {
-            "height": 150,
-            "width": 266,
+            "size": {
+                "Gif": [
+                    150,
+                    310
+                ],
+                "Image": [
+                    150,
+                    266
+                ],
+                "Color": [
+                    150,
+                    242
+                ]
+            },
             "showToolTips": true,
             "staysOnTop": false,
             "showOnTaskbar": true,
@@ -135,8 +147,20 @@
     },
     "custom": {
         "window": {
-            "height": 150,
-            "width": 266,
+            "size": {
+                "Gif": [
+                    150,
+                    310
+                ],
+                "Image": [
+                    150,
+                    266
+                ],
+                "Color": [
+                    150,
+                    242
+                ]
+            },
             "showToolTips": true,
             "staysOnTop": false,
             "showOnTaskbar": true,

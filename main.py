@@ -25,13 +25,14 @@ class MainWindow(QMainWindow):
 
         self.isTitlebarPress = False
         self.isWindowPress = False
+        self.backgroundType = self.configData[self.user]["background"]["type"]
         self.advancedOptions = self.configData[self.user]["window"]["advancedOptions"]
         self.isOpenEditMenu = self.configData[self.user]["window"]["isOpenEditMenu"]
         self.showOnTaskbar = self.configData[self.user]["window"]["showOnTaskbar"]
         self.showToolTips = self.configData[self.user]["window"]["showToolTips"]
         self.staysOnTop = self.configData[self.user]["window"]["staysOnTop"]
-        self.windowHeight = self.configData[self.user]["window"]["height"]
-        self.windowWidth = self.configData[self.user]["window"]["width"]
+        self.windowHeight = self.configData[self.user]["window"]["size"][self.backgroundType][0]
+        self.windowWidth = self.configData[self.user]["window"]["size"][self.backgroundType][1]
 
         self.backgroundType = self.configData[self.user]["background"]["type"]
         self.backgroundNormalGif = self.configData[self.user]["background"]["gif"]["normal"]
