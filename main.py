@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QHBoxLayout, QLabel, QSizeGrip
-from PyQt5.QtGui import QFontDatabase, QFont
-from PyQt5.QtCore import Qt, QTimer, QTime, QRect
+from PyQt5.QtGui import QFontDatabase, QFont, QImage, QPixmap, QPainter
+from PyQt5.QtCore import Qt, QTimer, QTime, QRect, QEvent, QByteArray
+from PyQt5.QtSvg import QSvgRenderer
 
 from src import SideGrip
 
@@ -70,6 +71,7 @@ class MainWindow(QMainWindow):
         self.iconSize = tuple(self.configData[self.user]["text"]["iconSize"])
         self.iconNormalColor = tuple(self.configData[self.user]["text"]["iconColor"]["normal"][self.backgroundType])
         self.iconHoverColor = tuple(self.configData[self.user]["text"]["iconColor"]["hover"][self.backgroundType])
+        self.__loadSvgContent()
         self.editMenu = None
         self._gripSize = 8
 
@@ -140,6 +142,8 @@ class MainWindow(QMainWindow):
         self.buttons.append(self.closeButton)
         self.closeButton.installEventFilter(self)
 
+        self.updateSVG((255, 255, 255), self.iconNormalColor)
+
         self.centralWidget.setLayout(self.buttonLayout)
         self.setCentralWidget(self.centralWidget)
 
@@ -150,6 +154,8 @@ class MainWindow(QMainWindow):
         self.sideGrips = [SideGrip(self, Qt.LeftEdge), SideGrip(self, Qt.TopEdge), SideGrip(self, Qt.RightEdge), SideGrip(self, Qt.BottomEdge), ]
         self.cornerGrips = [QSizeGrip(self) for i in range(4)]
         [self.cornerGrips[i].setStyleSheet("background-color: transparent;") for i in range(4)]
+
+        self.installEventFilter(self)
 
 
     def setWidgets(self):
@@ -275,6 +281,136 @@ class MainWindow(QMainWindow):
             inRect.width(), self._gripSize)
 
 
+    def updateSVG(self, oldColor, newColor):
+        self.editContent = self.editContent.replace(f'stroke="rgb{oldColor}"', f'stroke="rgb{newColor}"')
+        self.editRenderer.load(QByteArray(self.editContent.encode()))
+        self.editButton.setPixmap(self.renderSVG(self.editRenderer))
+
+        self.moveContent = self.moveContent.replace(f'stroke="rgb{oldColor}"', f'stroke="rgb{newColor}"')
+        self.moveRenderer.load(QByteArray(self.moveContent.encode()))
+        self.moveButton.setPixmap(self.renderSVG(self.moveRenderer))
+
+        self.closeContent = self.closeContent.replace(f'stroke="rgb{oldColor}"', f'stroke="rgb{newColor}"')
+        self.closeRenderer.load(QByteArray(self.closeContent.encode()))
+        self.closeButton.setPixmap(self.renderSVG(self.closeRenderer))
+
+
+    def eventFilter(self, object, event):
+        if object == self.centralWidget:
+            if event.type() == QEvent.Enter:
+                if self.backgroundType == "Gif":
+                    self.animationTimer.stop()
+                    self.topLayer.setStyleSheet(f"background-color: transparent; border-image: url('{self.backgroundGifPath}{self.backgroundBlurGif}'); border-radius:{self.backgroundBorderRadius};")
+
+                elif self.backgroundType == "Image":
+                    self.topLayer.setStyleSheet(f"background-color: transparent; border-image: url('{self.backgroundImagePath}{self.backgroundBlurImage}'); border-radius:{self.backgroundBorderRadius};")
+
+                elif self.backgroundType == "Color":
+                    self.topLayer.setStyleSheet(f"background-color: rgba{self.backgroundColor}; border-radius:{self.backgroundBorderRadius};")
+
+                self.dateText.setVisible(True)
+                self.editButton.setVisible(True)
+                self.moveButton.setVisible(True)
+                self.closeButton.setVisible(True)
+
+            elif event.type() == QEvent.Leave:
+                if self.backgroundType == "Gif":
+                    if self.backgroundAnimation == True:
+                        self.animationTimer.start(self.backgroundAnimationDuration)
+                    self.topLayer.setStyleSheet(f"background-color: transparent; border-image: url('{self.backgroundGifPath}{self.backgroundTopGif}'); border-radius:{self.backgroundBorderRadius};")
+
+                elif self.backgroundType == "Image":
+                    self.topLayer.setStyleSheet(f"background-color: transparent; border-image: url('{self.backgroundImagePath}{self.backgroundTopImage}'); border-radius:{self.backgroundBorderRadius};")
+
+                elif self.backgroundType == "Color":
+                    self.topLayer.setStyleSheet(f"background-color: transparent; border-radius:{self.backgroundBorderRadius};")
+
+                self.dateText.setVisible(False)
+                self.editButton.setVisible(False)
+                self.moveButton.setVisible(False)
+                self.closeButton.setVisible(False)
+
+        elif object == self.editButton:
+            if event.type() == QEvent.Enter:
+                self.editContent = self.editContent.replace(f'stroke="rgb{self.iconNormalColor}"', f'stroke="rgb{self.iconHoverColor}"')
+                self.editRenderer.load(QByteArray(self.editContent.encode()))
+                self.editButton.setPixmap(self.renderSVG(self.editRenderer))
+
+            elif event.type() == QEvent.Leave:
+                self.editContent = self.editContent.replace(f'stroke="rgb{self.iconHoverColor}"', f'stroke="rgb{self.iconNormalColor}"')
+                self.editRenderer.load(QByteArray(self.editContent.encode()))
+                self.editButton.setPixmap(self.renderSVG(self.editRenderer))
+
+            elif event.type() == QEvent.MouseButtonPress:
+                if event.button() == Qt.LeftButton:
+                    self.openEditMenu()
+
+        elif object == self.moveButton:
+            if event.type() == QEvent.Enter:
+                self.moveContent = self.moveContent.replace(f'stroke="rgb{self.iconNormalColor}"', f'stroke="rgb{self.iconHoverColor}"')
+                self.moveRenderer.load(QByteArray(self.moveContent.encode()))
+                self.moveButton.setPixmap(self.renderSVG(self.moveRenderer))
+
+            elif event.type() == QEvent.Leave:
+                self.moveContent = self.moveContent.replace(f'stroke="rgb{self.iconHoverColor}"', f'stroke="rgb{self.iconNormalColor}"')
+                self.moveRenderer.load(QByteArray(self.moveContent.encode()))
+                self.moveButton.setPixmap(self.renderSVG(self.moveRenderer))
+
+            elif event.type() == QEvent.MouseButtonPress:
+                if event.button() == Qt.LeftButton and self.isWindowPress == False:
+                    self.oldpos = event.globalPos()
+                    self.oldwindowpos = self.pos()
+                    self.isTitlebarPress = True
+                return True
+
+            elif event.type() == QEvent.MouseButtonRelease:
+                self.isTitlebarPress = False
+                return True
+
+            elif event.type() == QEvent.MouseMove:
+                if (self.isTitlebarPress):
+                    distance = event.globalPos()-self.oldpos
+                    newwindowpos = self.oldwindowpos + distance
+                    self.move(newwindowpos)
+
+                    if self.editMenu != None:
+                        self.editMenu.move(int(self.x() - (self.editMenu.width() - self.width()) / 2), self.y() + self.height() + 30)
+
+                return True
+
+            else:
+                return False
+
+        elif object == self.closeButton:
+            if event.type() == QEvent.Enter:
+                self.closeContent = self.closeContent.replace(f'stroke="rgb{self.iconNormalColor}"', f'stroke="rgb(255, 0, 0)"')
+                self.closeRenderer.load(QByteArray(self.closeContent.encode()))
+                self.closeButton.setPixmap(self.renderSVG(self.closeRenderer))
+
+            elif event.type() == QEvent.Leave:
+                self.closeContent = self.closeContent.replace(f'stroke="rgb(255, 0, 0)"', f'stroke="rgb{self.iconNormalColor}"')
+                self.closeRenderer.load(QByteArray(self.closeContent.encode()))
+                self.closeButton.setPixmap(self.renderSVG(self.closeRenderer))
+
+            elif event.type() == QEvent.MouseButtonPress:
+                if event.button() == Qt.LeftButton:
+                    self.close()
+
+        return False
+
+
+    def renderSVG(self, icon):
+        image = QImage(self.iconSize[0], self.iconSize[1], QImage.Format_ARGB32)
+        image.fill(Qt.transparent)
+
+        painter = QPainter(image)
+        icon.render(painter)
+        painter.end()
+
+        pixmap = QPixmap.fromImage(image)
+        return pixmap
+
+
     def resizeEvent(self, event):
         QMainWindow.resizeEvent(self, event)
         
@@ -316,13 +452,36 @@ class MainWindow(QMainWindow):
         for button in self.buttons:
             button.setFixedSize(buttonSize, buttonSize)
 
+        self.editButton.setPixmap(self.renderSVG(self.editRenderer))
+        self.moveButton.setPixmap(self.renderSVG(self.moveRenderer))
+        self.closeButton.setPixmap(self.renderSVG(self.closeRenderer))
+
         self.buttonLayout.setContentsMargins(10, int(event.size().height() / 1.5), 10, 10)
+
+
+    def openEditMenu(self):
+        pass
 
 
     def __loadConfigData(self):
         """ load configuration data from json """
         with open("src/data/config.json", "r") as data:
             return json.load(data)
+
+
+    def __loadSvgContent(self):
+        with open(f'{self.iconPath}edit.svg', 'r') as f:
+            self.editContent = f.read()
+
+        with open(f'{self.iconPath}move.svg', 'r') as f:
+            self.moveContent = f.read()
+
+        with open(f'{self.iconPath}close.svg', 'r') as f:
+            self.closeContent = f.read()
+
+        self.editRenderer = QSvgRenderer(f'{self.iconPath}edit.svg')
+        self.moveRenderer = QSvgRenderer(f'{self.iconPath}move.svg')
+        self.closeRenderer = QSvgRenderer(f'{self.iconPath}close.svg')
 
 
 
