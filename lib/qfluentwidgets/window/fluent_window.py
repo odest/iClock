@@ -16,7 +16,9 @@ from ..components.navigation import (NavigationInterface, NavigationBar, Navigat
                                      NavigationBarPushButton, NavigationTreeWidget)
 from .stacked_widget import StackedWidget
 
-from qframelesswindow import TitleBar
+#The usage of 'lib.' was employed while importing because it has been moved to the 'lib' directory.
+#The standard usage was 'qframelesswindow import TitleBar'
+from lib.qframelesswindow import TitleBar
 
 
 class FluentWindowBase(BackgroundAnimationWidget, FramelessWindow):
