@@ -3,7 +3,7 @@ from PyQt5.QtGui import QFontDatabase, QFont, QImage, QPixmap, QPainter, QResize
 from PyQt5.QtCore import Qt, QTimer, QTime, QRect, QEvent, QByteArray, QSize
 from PyQt5.QtSvg import QSvgRenderer
 
-from src import SideGrip, ContextMenu
+from src import EditMenu, SideGrip, ContextMenu
 
 from datetime import datetime
 import json
@@ -460,7 +460,17 @@ class MainWindow(QMainWindow):
 
 
     def openEditMenu(self):
-        pass
+        if not self.editMenu:
+            self.editMenu = EditMenu(self)
+            self.editMenu.show()
+
+
+    def closeEvent(self, event):
+        if hasattr(self, 'editMenu'):
+            if self.editMenu != None:
+                self.editMenu.close()
+                self.editMenu = None
+                self.isOpenEditMenu = False
 
 
     def contextMenuEvent(self, e: QContextMenuEvent):
