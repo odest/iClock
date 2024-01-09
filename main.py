@@ -1,9 +1,9 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QHBoxLayout, QLabel, QSizeGrip
-from PyQt5.QtGui import QFontDatabase, QFont, QImage, QPixmap, QPainter
-from PyQt5.QtCore import Qt, QTimer, QTime, QRect, QEvent, QByteArray
+from PyQt5.QtGui import QFontDatabase, QFont, QImage, QPixmap, QPainter, QResizeEvent, QContextMenuEvent
+from PyQt5.QtCore import Qt, QTimer, QTime, QRect, QEvent, QByteArray, QSize
 from PyQt5.QtSvg import QSvgRenderer
 
-from src import SideGrip
+from src import SideGrip, ContextMenu
 
 from datetime import datetime
 import json
@@ -461,6 +461,107 @@ class MainWindow(QMainWindow):
 
     def openEditMenu(self):
         pass
+
+
+    def contextMenuEvent(self, e: QContextMenuEvent):
+        contextMenu = ContextMenu(self)
+        self.__connectMenuSignalToSlot(contextMenu)
+        contextMenu.exec(self.cursor().pos())
+
+
+    def __connectMenuSignalToSlot(self, menu: ContextMenu):
+        menu.center.triggered.connect(lambda: self.alignWindow("Center"))
+        menu.horizontallyCentered.triggered.connect(lambda: self.alignWindow("Horizontally Centered"))
+        menu.verticallyCentered.triggered.connect(lambda: self.alignWindow("Vertically Centered"))
+        menu.topLeft.triggered.connect(lambda: self.alignWindow("Top Left"))
+        menu.topRight.triggered.connect(lambda: self.alignWindow("Top Right"))
+        menu.bottomLeft.triggered.connect(lambda: self.alignWindow("Bottom Left"))
+        menu.bottomRight.triggered.connect(lambda: self.alignWindow("Bottom Right"))
+
+        menu.maximize.triggered.connect(self.maximizeWidget)
+        menu.minimize.triggered.connect(self.showMinimized)
+        menu.restore.triggered.connect(self.restoreWidget)
+        menu.kill.triggered.connect(self.close)
+        menu.edit.triggered.connect(self.openEditMenu)
+        menu.default.triggered.connect(self.backToDefault)
+
+
+    def backToDefault(self):
+        pass
+
+
+    def maximizeWidget(self):
+        self.showMaximized()
+        fakeEvent = QResizeEvent(self.size(), QSize())
+        self.resizeEvent(fakeEvent)
+
+
+    def restoreWidget(self):
+        self.showNormal()
+        fakeEvent = QResizeEvent(self.size(), QSize())
+        self.resizeEvent(fakeEvent)
+
+
+    def alignWindow(self, align):
+        if align == "Center":
+            windowGeometry = self.frameGeometry()
+            centerOfWindowGeometry = QApplication.desktop().availableGeometry().center()
+            windowGeometry.moveCenter(centerOfWindowGeometry)
+            self.move(windowGeometry.topLeft())
+
+            if self.editMenu != None:
+                self.editMenu.move(int(self.x() - (self.editMenu.width() - self.width()) / 2), self.y() + self.height() + 30)
+
+        elif align == "Horizontally Centered":
+            screenSize = QApplication.desktop().availableGeometry()
+            x = int((screenSize.width() / 2) - (self.windowWidth / 2))
+            y = self.y()
+            self.move(x, y)
+
+            if self.editMenu != None:
+                self.editMenu.move(int(self.x() - (self.editMenu.width() - self.width()) / 2), self.y() + self.height() + 30)
+
+        elif align == "Vertically Centered":
+            screenSize = QApplication.desktop().availableGeometry()
+            x = self.x()
+            y = int((screenSize.height() / 2) - (self.windowHeight / 2))
+            self.move(x, y)
+
+            if self.editMenu != None:
+                self.editMenu.move(int(self.x() - (self.editMenu.width() - self.width()) / 2), self.y() + self.height() + 30)
+
+        elif align == "Top Left":
+            self.move(40, 40)
+
+            if self.editMenu != None:
+                self.editMenu.move(int(self.x() - (self.editMenu.width() - self.width()) / 2), self.y() + self.height() + 30)
+
+        elif align == "Top Right":
+            screenSize = QApplication.desktop().availableGeometry()
+            x = int(screenSize.width() - (self.windowWidth + 40))
+            y = 40
+            self.move(x, y)
+
+            if self.editMenu != None:
+                self.editMenu.move(int(self.x() - (self.editMenu.width() - self.width()) / 2), self.y() + self.height() + 30)
+
+        elif align == "Bottom Left":
+            screenSize = QApplication.desktop().availableGeometry()
+            x = 40
+            y = int(screenSize.height() - (self.windowHeight + 40))
+            self.move(x, y)
+
+            if self.editMenu != None:
+                self.editMenu.move(int(self.x() - (self.editMenu.width() - self.width()) / 2), self.y() - self.editMenu.height() - 30)
+
+        elif align == "Bottom Right":
+            screenSize = QApplication.desktop().availableGeometry()
+            x = int(screenSize.width() - (self.windowWidth + 40))
+            y = int(screenSize.height() - (self.windowHeight + 40))
+            self.move(x, y)
+
+            if self.editMenu != None:
+                self.editMenu.move(int(self.x() - (self.editMenu.width() - self.width()) / 2), self.y() - self.editMenu.height() - 30)
 
 
     def __loadConfigData(self):
