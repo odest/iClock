@@ -3,7 +3,7 @@ from PyQt5.QtGui import QIcon
 
 from lib import SegmentedWidget, setTheme, Theme, PushButton, PrimaryPushButton
 from lib import AcrylicWindow
-from src import CustomTitleBar
+from src import CustomTitleBar, BackgroundPage
 
 
 class EditMenu(AcrylicWindow):
@@ -25,6 +25,7 @@ class EditMenu(AcrylicWindow):
 
     def initWindow(self):
         """ initialize window """
+        setTheme(Theme.DARK)
         _averageTitlebarHeight = 30
         if (self.parent.y() + self.parent.height() + _averageTitlebarHeight + self.windowHeight) > QApplication.desktop().availableGeometry().height():
             windowYCoord = self.parent.y() - _averageTitlebarHeight - self.windowHeight
@@ -45,7 +46,7 @@ class EditMenu(AcrylicWindow):
         self.stackedWidget = QStackedWidget(self)
         self.mainVBoxLayout = QVBoxLayout(self)
 
-        self.backgroundPage = QWidget(self)
+        self.backgroundPage = BackgroundPage(self.parent)
         self.textPage = QWidget(self)
         self.settingsPage = QWidget(self)
 
