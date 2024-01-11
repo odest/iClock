@@ -3,7 +3,7 @@ from PyQt5.QtGui import QIcon
 
 from lib import SegmentedWidget, setTheme, Theme, PushButton, PrimaryPushButton
 from lib import AcrylicWindow
-from src import CustomTitleBar, BackgroundPage, TextPage
+from src import CustomTitleBar, BackgroundPage, TextPage, SettingsPage
 
 
 class EditMenu(AcrylicWindow):
@@ -48,7 +48,7 @@ class EditMenu(AcrylicWindow):
 
         self.backgroundPage = BackgroundPage(self.parent)
         self.textPage = TextPage(self.parent)
-        self.settingsPage = QWidget(self)
+        self.settingsPage = SettingsPage(self.parent, self)
 
         self.addSubInterface(self.backgroundPage, 'backgroundPage', 'Background')
         self.addSubInterface(self.textPage, 'textPage', 'Text')
