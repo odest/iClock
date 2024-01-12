@@ -3,7 +3,7 @@ import sys
 from typing import Union, List, Iterable
 
 from PyQt5.QtCore import Qt, pyqtSignal, QRectF, QPoint, QObject, QEvent
-from PyQt5.QtGui import QPainter, QCursor, QIcon
+from PyQt5.QtGui import QPainter, QCursor, QIcon, QFont
 from PyQt5.QtWidgets import QAction, QPushButton, QApplication
 
 from .menu import RoundMenu, MenuAnimationType, IndicatorMenuItemDelegate
@@ -18,7 +18,7 @@ from ...common.style_sheet import FluentStyleSheet
 class ComboItem:
     """ Combo box item """
 
-    def __init__(self, text: str, icon: Union[str, QIcon, FluentIconBase] = None, userData=None):
+    def __init__(self, text: str, font=QFont, icon: Union[str, QIcon, FluentIconBase] = None, userData=None):
         """ add item
 
         Parameters
@@ -33,6 +33,7 @@ class ComboItem:
             user data
         """
         self.text = text
+        self.font = font
         self.userData = userData
         self.icon = icon
 
@@ -66,6 +67,7 @@ class ComboBoxBase(QObject):
         self._maxVisibleItems = -1
         self.dropMenu = None
         self._placeholderText = ""
+        self.applyFont = None
 
         FluentStyleSheet.COMBO_BOX.apply(self)
         self.installEventFilter(self)
@@ -83,7 +85,7 @@ class ComboBoxBase(QObject):
 
         return super().eventFilter(obj, e)
 
-    def addItem(self, text: str, icon: Union[str, QIcon, FluentIconBase] = None, userData=None):
+    def addItem(self, text: str, font=QFont, icon: Union[str, QIcon, FluentIconBase] = None, userData=None):
         """ add item
 
         Parameters
@@ -93,12 +95,12 @@ class ComboBoxBase(QObject):
 
         icon: str | QIcon | FluentIconBase
         """
-        item = ComboItem(text, icon, userData)
+        item = ComboItem(text, font, icon, userData)
         self.items.append(item)
         if len(self.items) == 1:
             self.setCurrentIndex(0)
 
-    def addItems(self, texts: Iterable[str]):
+    def addItems(self, texts: Iterable[str], fonts=None):
         """ add items
 
         Parameters
@@ -106,8 +108,14 @@ class ComboBoxBase(QObject):
         text: Iterable[str]
             the text of item
         """
-        for text in texts:
-            self.addItem(text)
+        if fonts != None:
+            self.applyFont = True
+            for i in range(len(texts)):
+                self.addItem(texts[i], fonts[i])
+        else:
+            self.applyFont = False
+            for text in texts:
+                self.addItem(text)
 
     def removeItem(self, index: int):
         """ Removes the item at the given index from the combobox.
@@ -146,7 +154,7 @@ class ComboBoxBase(QObject):
             return
 
         self._currentIndex = index
-        self.setText(self.items[index].text)
+        self.setText(f"{self._placeholderText} {self.items[index].text}")
 
     def setText(self, text: str):
         super().setText(text)
@@ -335,6 +343,10 @@ class ComboBoxBase(QObject):
         else:
             menu.view.adjustSize(pu, MenuAnimationType.PULL_UP)
             menu.exec(pu, aniType=MenuAnimationType.PULL_UP)
+
+        if self.applyFont == True:
+            for i in range(len(self.items)):
+                menu.setItemFont(i, self.items[i].font)
 
     def _toggleComboMenu(self):
         if self.dropMenu:

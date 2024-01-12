@@ -269,6 +269,7 @@ class RoundMenu(QMenu):
         self._icon = QIcon()
         self._actions = []  # type: List[QAction]
         self._subMenus = []
+        self.items = []
 
         self.isSubMenu = False
         self.parentMenu = None
@@ -412,6 +413,7 @@ class RoundMenu(QMenu):
             raise ValueError('`before` is not in the action list')
 
         item = QListWidgetItem(self._createItemIcon(action), action.text())
+        self.items.append(item)
         self._adjustItemText(item, action)
 
         # disable item if the action is not enabled
@@ -422,6 +424,9 @@ class RoundMenu(QMenu):
         action.setProperty('item', item)
         action.changed.connect(self._onActionChanged)
         return item
+
+    def setItemFont(self, index, font):
+        self.items[index].setFont(font)
 
     def _hasItemIcon(self):
         return any(not i.icon().isNull() for i in self._actions+self._subMenus)

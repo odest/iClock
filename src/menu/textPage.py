@@ -113,7 +113,7 @@ class TextPage(QWidget):
             self.fontDict[fontFamily] = i
             items.append(fontFamily)
             fonts.append(font)
-        self.fontComboBox.addItems(items)
+        self.fontComboBox.addItems(items, fonts)
         self.fontComboBox.setCurrentIndex(items.index(str(self.parent.fontFamily)))
         self.HBoxLayout8.addWidget(self.fontComboBox)
         self.filePickerMiniButton = ToolButton(FIF.FOLDER_ADD, self)
