@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QColorDialog
+from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt
 
 from lib import Slider, PushButton, ComboBox, ToolButton
@@ -39,8 +40,10 @@ class BackgroundPage(QWidget):
 
         self.HBoxLayout2 = QHBoxLayout()
         self.borderColorPickerButton = PushButton('Set Border Color', self, FIF.PALETTE)
+        self.borderColorPickerButton.clicked.connect(lambda: self.showColorDialog(self.updateBorderColor, self.parent.backgroundBorderColor))
         self.HBoxLayout2.addWidget(self.borderColorPickerButton)
         self.borderColorPickerMiniButton = PushButton(self)
+        self.borderColorPickerMiniButton.clicked.connect(lambda: self.showColorDialog(self.updateBorderColor, self.parent.backgroundBorderColor))
         self.borderColorPickerMiniButton.setStyleSheet("PushButton {background: rgba%s; border-radius: 5px;}" % str(self.parent.backgroundBorderColor))
         self.borderColorPickerMiniButton.setMaximumSize(32, 32)
         self.HBoxLayout2.addWidget(self.borderColorPickerMiniButton)
@@ -48,16 +51,15 @@ class BackgroundPage(QWidget):
 
         self.HBoxLayout3 = QHBoxLayout()
         self.borderOpacityLabel = QLabel(f"Border Opacity: {self.parent.backgroundBorderOpacity}", self)
-        self.borderOpacityLabel.setVisible(self.parent.advancedOptions)
         self.borderOpacityLabel.setStyleSheet("font: 20px 'Segoe UI'; background: transparent; color: white;")
         self.HBoxLayout3.addWidget(self.borderOpacityLabel)
         self.borderOpacitySlider = Slider(Qt.Horizontal, self)
-        self.borderOpacitySlider.setVisible(self.parent.advancedOptions)
         self.borderOpacitySlider.setMinimum(0)
         self.borderOpacitySlider.setMaximum(100)
         self.borderOpacitySlider.setTickInterval(1)
         self.borderOpacitySlider.setSingleStep(1)
         self.borderOpacitySlider.setValue(int(self.parent.backgroundBorderOpacity))
+        self.borderOpacitySlider.valueChanged.connect(lambda value: self.sliderEvent("Border Opacity", self.borderOpacitySlider, self.borderOpacityLabel))
         self.HBoxLayout3.addWidget(self.borderOpacitySlider)
         self.mainVBoxLayout.addLayout(self.HBoxLayout3)
 
@@ -71,6 +73,7 @@ class BackgroundPage(QWidget):
         self.borderSizeSlider.setTickInterval(1)
         self.borderSizeSlider.setSingleStep(1)
         self.borderSizeSlider.setValue(int(self.parent.backgroundBorderSize))
+        self.borderSizeSlider.valueChanged.connect(lambda value: self.sliderEvent("Border Size", self.borderSizeSlider, self.borderSizeLabel))
         self.HBoxLayout4.addWidget(self.borderSizeSlider)
         self.mainVBoxLayout.addLayout(self.HBoxLayout4)
 
@@ -84,6 +87,7 @@ class BackgroundPage(QWidget):
         self.borderRadiusSlider.setTickInterval(1)
         self.borderRadiusSlider.setSingleStep(1)
         self.borderRadiusSlider.setValue(int(self.parent.backgroundBorderRadius))
+        self.borderRadiusSlider.valueChanged.connect(lambda value: self.sliderEvent("Border Radius", self.borderRadiusSlider, self.borderRadiusLabel))
         self.HBoxLayout5.addWidget(self.borderRadiusSlider)
         self.mainVBoxLayout.addLayout(self.HBoxLayout5)
 
@@ -115,6 +119,43 @@ class BackgroundPage(QWidget):
             self.mainVBoxLayout.addLayout(self.HBoxLayout7)
 
 
+    def updateBorderColor(self, color):
+        r, g, b, _ = color.getRgb()
+        self.parent.backgroundBorderColor = (r, g, b, self.parent.backgroundBorderColor[3])
+        self.parent.borderLayer.setStyleSheet(f'background-color: transparent; border: {self.parent.backgroundBorderSize}px solid rgba{self.parent.backgroundBorderColor}; border-radius: {self.parent.backgroundBorderRadius}')
+        self.borderColorPickerMiniButton.setStyleSheet("PushButton {background: rgba%s; border-radius: 5px;}" % str(self.parent.backgroundBorderColor))
+
+
+    def updateBorderOpacity(self):
+        self.parent.borderLayer.setStyleSheet(f'background-color: transparent; border: {self.parent.backgroundBorderSize}px solid rgba{self.parent.backgroundBorderColor}; border-radius: {self.parent.backgroundBorderRadius}')
+
+
     def comboBoxSelect(self, text):
         self.parent.backgroundType = text
         self.parent.beforeRestart()
+
+
+    def showColorDialog(self, callback, currentColor):
+        color_dialog = QColorDialog(QColor(*currentColor), self)
+        color_dialog.setStyleSheet("QColorDialog {background: QLinearGradient( x1: 0, y1: 0,x2: 1, y2: 0, stop: 0 rgb(7,43,71), stop: 1 rgb(12,76,125)); color: black;}")
+        color_dialog.currentColorChanged.connect(callback)
+        color_dialog.exec_()
+
+
+    def sliderEvent(self, whichWidget, slider, label):
+        value = slider.value()
+
+        if whichWidget == "Border Size":
+            self.parent.backgroundBorderSize = value
+            self.parent.borderLayer.setStyleSheet(f'background-color: transparent; border: {self.parent.backgroundBorderSize}px solid rgba{self.parent.backgroundBorderColor}; border-radius: {self.parent.backgroundBorderRadius}')
+
+        elif whichWidget == "Border Opacity":
+            if value == 0:
+                value = 0.1
+            self.parent.backgroundBorderOpacity = value
+            self.parent.backgroundBorderColor = self.parent.backgroundBorderColor[:-1] + (int(value * 2.55),)
+            self.updateBorderOpacity()
+
+        elif whichWidget == "Border Radius":
+            self.parent.backgroundBorderRadius = value
+            self.parent.updateWidgets()
