@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QHBoxLayout, QLa
 from PyQt5.QtGui import QFontDatabase, QFont, QImage, QPixmap, QPainter, QResizeEvent, QContextMenuEvent
 from PyQt5.QtCore import Qt, QTimer, QTime, QRect, QEvent, QByteArray, QSize
 from PyQt5.QtSvg import QSvgRenderer
+from PyQt5 import QtCore
 
 from src import EditMenu, SideGrip, ContextMenu
 
@@ -194,6 +195,9 @@ class MainWindow(QMainWindow):
             self.animationTimer = QTimer(self)
             self.animationTimer.timeout.connect(self.updateAnimation)
             self.animationTimer.start(self.backgroundAnimationDuration)
+
+        if self.isOpenEditMenu:
+            self.openEditMenu()
 
 
     def updateWidgets(self):
@@ -472,6 +476,10 @@ class MainWindow(QMainWindow):
                 self.editMenu = None
                 self.isOpenEditMenu = False
 
+        self.configData["default"]["window"]["isOpenEditMenu"] = self.isOpenEditMenu
+        with open("src/data/config.json", "w") as f:
+            json.dump(self.configData, f, indent=4)
+
 
     def contextMenuEvent(self, e: QContextMenuEvent):
         contextMenu = ContextMenu(self)
@@ -496,8 +504,25 @@ class MainWindow(QMainWindow):
         menu.default.triggered.connect(self.backToDefault)
 
 
+    def beforeRestart(self):
+        if self.editMenu:
+            self.configData[self.user]["window"]["isOpenEditMenu"] = True
+
+        self.configData[self.user]["background"]["type"] = self.backgroundType
+        with open("src/data/config.json", "w") as f:
+            json.dump(self.configData, f, indent=4)
+
+        self.__restart()
+
+
+    def __restart(self):
+        QtCore.QCoreApplication.quit()
+        QtCore.QProcess.startDetached(sys.executable, sys.argv)
+
+
     def backToDefault(self):
-        pass
+        self.user = "default"
+        self.beforeRestart()
 
 
     def maximizeWidget(self):

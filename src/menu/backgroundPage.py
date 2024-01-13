@@ -22,6 +22,7 @@ class BackgroundPage(QWidget):
         _typeList = ["Gif", "Image", "Color"]
         self.backgroundTypeComboBox.addItems(_typeList)
         self.backgroundTypeComboBox.setCurrentIndex(_typeList.index(str(self.parent.backgroundType)))
+        self.backgroundTypeComboBox.currentTextChanged.connect(self.comboBoxSelect)
         self.HBoxLayout1.addWidget(self.backgroundTypeComboBox)
         self.filePickerMiniButton = ToolButton(FIF.FOLDER_ADD, self)
         self.filePickerMiniButton.setMaximumSize(32, 32)
@@ -112,3 +113,8 @@ class BackgroundPage(QWidget):
             self.durationSlider.setValue(int(self.parent.backgroundAnimationDuration))
             self.HBoxLayout7.addWidget(self.durationSlider)
             self.mainVBoxLayout.addLayout(self.HBoxLayout7)
+
+
+    def comboBoxSelect(self, text):
+        self.parent.backgroundType = text
+        self.parent.beforeRestart()

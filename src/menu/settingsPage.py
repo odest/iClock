@@ -92,5 +92,6 @@ class SettingsPage(QWidget):
 
         self.HBoxLayout6 = QHBoxLayout()
         self.backToDefaultButton = PushButton('Back to Default', self, FIF.LEFT_ARROW)
+        self.backToDefaultButton.clicked.connect(self.parent.backToDefault)
         self.HBoxLayout6.addWidget(self.backToDefaultButton)
         self.mainVBoxLayout.addLayout(self.HBoxLayout6)
