@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QHBoxLayout, QLabel, QSizeGrip
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QHBoxLayout, QLabel, QSizeGrip, QGraphicsOpacityEffect
 from PyQt5.QtGui import QFontDatabase, QFont, QImage, QPixmap, QPainter, QResizeEvent, QContextMenuEvent
 from PyQt5.QtCore import Qt, QTimer, QTime, QRect, QEvent, QByteArray, QSize
 from PyQt5.QtSvg import QSvgRenderer
@@ -93,6 +93,7 @@ class MainWindow(QMainWindow):
         self.backgroundLayer = QLabel(self)
         self.backgroundLayer.setScaledContents(True)
         self.backgroundLayer.setGeometry(0, 0, self.windowWidth, self.windowHeight)
+        self.backgroundLayerOpacityEffect = QGraphicsOpacityEffect()
 
         self.clockText = QLabel(self)
         self.clockText.setAlignment(Qt.AlignCenter)
@@ -105,6 +106,7 @@ class MainWindow(QMainWindow):
         self.topLayer = QLabel(self)
         self.topLayer.setScaledContents(True)
         self.topLayer.setGeometry(0, 0, self.windowWidth, self.windowHeight)
+        self.topLayerOpacityEffect = QGraphicsOpacityEffect()
 
         self.borderLayer = QLabel(self)
         self.borderLayer.setScaledContents(True)
@@ -144,6 +146,7 @@ class MainWindow(QMainWindow):
         self.closeButton.installEventFilter(self)
 
         self.updateSVG((255, 255, 255), self.iconNormalColor)
+        self.updateBackgroundOpacity(self.backgroundOpacity)
 
         self.centralWidget.setLayout(self.buttonLayout)
         self.setCentralWidget(self.centralWidget)
@@ -299,6 +302,13 @@ class MainWindow(QMainWindow):
         self.closeButton.setPixmap(self.renderSVG(self.closeRenderer))
 
 
+    def updateBackgroundOpacity(self, value):
+        self.backgroundLayerOpacityEffect.setOpacity(value * 0.01)
+        self.backgroundLayer.setGraphicsEffect(self.backgroundLayerOpacityEffect)
+        self.topLayerOpacityEffect.setOpacity(value * 0.01)
+        self.topLayer.setGraphicsEffect(self.topLayerOpacityEffect)
+
+
     def eventFilter(self, object, event):
         if object == self.centralWidget:
             if event.type() == QEvent.Enter:
@@ -316,6 +326,7 @@ class MainWindow(QMainWindow):
                 self.editButton.setVisible(True)
                 self.moveButton.setVisible(True)
                 self.closeButton.setVisible(True)
+                self.updateBackgroundOpacity(100)
 
             elif event.type() == QEvent.Leave:
                 if self.backgroundType == "Gif":
@@ -333,6 +344,7 @@ class MainWindow(QMainWindow):
                 self.editButton.setVisible(False)
                 self.moveButton.setVisible(False)
                 self.closeButton.setVisible(False)
+                self.updateBackgroundOpacity(self.backgroundOpacity)
 
         elif object == self.editButton:
             if event.type() == QEvent.Enter:

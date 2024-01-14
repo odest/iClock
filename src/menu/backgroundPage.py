@@ -50,7 +50,7 @@ class BackgroundPage(QWidget):
         self.mainVBoxLayout.addLayout(self.HBoxLayout2)
 
         self.HBoxLayout3 = QHBoxLayout()
-        self.borderOpacityLabel = QLabel(f"Border Opacity: {self.parent.backgroundBorderOpacity}", self)
+        self.borderOpacityLabel = QLabel(f"Border Opacity: %{self.parent.backgroundBorderOpacity}", self)
         self.borderOpacityLabel.setStyleSheet("font: 20px 'Segoe UI'; background: transparent; color: white;")
         self.HBoxLayout3.addWidget(self.borderOpacityLabel)
         self.borderOpacitySlider = Slider(Qt.Horizontal, self)
@@ -101,6 +101,7 @@ class BackgroundPage(QWidget):
         self.opacitySlider.setTickInterval(1)
         self.opacitySlider.setSingleStep(1)
         self.opacitySlider.setValue(int(self.parent.backgroundOpacity))
+        self.opacitySlider.valueChanged.connect(lambda value: self.sliderEvent("Opacity", self.opacitySlider, self.opacityLabel))
         self.HBoxLayout6.addWidget(self.opacitySlider)
         self.mainVBoxLayout.addLayout(self.HBoxLayout6)
 
@@ -145,6 +146,11 @@ class BackgroundPage(QWidget):
     def sliderEvent(self, whichWidget, slider, label):
         value = slider.value()
 
+        if whichWidget == "Opacity" or whichWidget == "Border Opacity":
+            label.setText(f"{whichWidget}: %{value}")
+        else:
+            label.setText(f"{whichWidget}: {value}")
+
         if whichWidget == "Border Size":
             self.parent.backgroundBorderSize = value
             self.parent.borderLayer.setStyleSheet(f'background-color: transparent; border: {self.parent.backgroundBorderSize}px solid rgba{self.parent.backgroundBorderColor}; border-radius: {self.parent.backgroundBorderRadius}')
@@ -159,3 +165,9 @@ class BackgroundPage(QWidget):
         elif whichWidget == "Border Radius":
             self.parent.backgroundBorderRadius = value
             self.parent.updateWidgets()
+
+        elif whichWidget == "Opacity":
+            if value == 0:
+                value = 0.1
+            self.parent.backgroundOpacity = value
+            self.parent.updateBackgroundOpacity(self.parent.backgroundOpacity)
