@@ -1,9 +1,14 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QColorDialog
+from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QColorDialog, QFileDialog
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt
 
-from lib import Slider, PushButton, ComboBox, ToolButton
+from lib import Slider, PushButton, ComboBox, ToolButton, InfoBar, InfoBarPosition
 from lib import FluentIcon as FIF
+
+from PIL import Image, ImageFilter
+
+import shutil
+import os
 
 
 
@@ -26,6 +31,7 @@ class BackgroundPage(QWidget):
         self.backgroundTypeComboBox.currentTextChanged.connect(self.comboBoxSelect)
         self.HBoxLayout1.addWidget(self.backgroundTypeComboBox)
         self.filePickerMiniButton = ToolButton(FIF.FOLDER_ADD, self)
+        self.filePickerMiniButton.clicked.connect(self.showFileDialog)
         self.filePickerMiniButton.setMaximumSize(32, 32)
         self.HBoxLayout1.addWidget(self.filePickerMiniButton)
         self.colorPickerMiniButton = PushButton(self)
@@ -151,6 +157,49 @@ class BackgroundPage(QWidget):
         color_dialog.exec_()
 
 
+    def showFileDialog(self):
+        if self.parent.backgroundType == "Gif":
+            pass
+        elif self.parent.backgroundType == "Image":
+            imagePath, _ = QFileDialog.getOpenFileName(self, "Select Image", "", "Images (*.png *.jpg *.jpeg *.webp)")
+
+            if imagePath:
+                try:
+                    targetFolder = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "assets", "images", "custom")
+                    copiedImagePath = self.__copySelectedFile(imagePath, targetFolder)
+
+                    if copiedImagePath:
+                        self.parent.backgroundImagePath = "src/assets/images/custom/"
+                        self.parent.backgroundTopImage = None
+                        self.parent.backgroundNormalImage = os.path.basename(imagePath)
+                        self.parent.backgroundLayer.setStyleSheet(f"border-image: url('{self.parent.backgroundImagePath}{self.parent.backgroundNormalImage}'); border-radius:{self.parent.backgroundBorderRadius}px;")
+                        self.parent.topLayer.setStyleSheet(f"background-color: transparent; border-image: url('{self.parent.backgroundImagePath}{self.parent.backgroundTopImage}'); border-radius:{self.parent.backgroundBorderRadius}px;")
+                        self.parent.backgroundBlurImage = f"blur{self.parent.backgroundNormalImage}"
+
+                        image = Image.open(imagePath)
+
+                        if image.format == "PNG":
+                            convertedImage = image.convert('RGB')
+                            bluredImage = convertedImage.filter(ImageFilter.GaussianBlur(10))
+                            bluredImage.save(f"{self.parent.backgroundImagePath}{self.parent.backgroundBlurImage}")
+                        else:
+                            bluredImage = image.filter(ImageFilter.GaussianBlur(10))
+                            bluredImage.save(f"{self.parent.backgroundImagePath}{self.parent.backgroundBlurImage}")
+
+                    else:
+                        self.parent.backgroundImagePath = "src/assets/images/custom/"
+                        self.parent.backgroundTopImage = None
+                        self.parent.backgroundNormalImage = os.path.basename(imagePath)
+                        self.parent.backgroundLayer.setStyleSheet(f"border-image: url('{self.parent.backgroundImagePath}{self.parent.backgroundNormalImage}'); border-radius:{self.parent.backgroundBorderRadius}px;")
+                        self.parent.topLayer.setStyleSheet(f"background-color: transparent; border-image: url('{self.parent.backgroundImagePath}{self.parent.backgroundTopImage}'); border-radius:{self.parent.backgroundBorderRadius}px;")
+                        self.parent.backgroundBlurImage = f"blur{self.parent.backgroundNormalImage}"
+
+                    self.__showInfoBar("success", "SUCCESS", "Selected image applied successfully.")
+
+                except Exception as e:
+                        self.__showInfoBar("error", "ERROR", "Please select a valid image file!")
+
+
     def sliderEvent(self, whichWidget, slider, label):
         value = slider.value()
 
@@ -179,3 +228,47 @@ class BackgroundPage(QWidget):
                 value = 0.1
             self.parent.backgroundOpacity = value
             self.parent.updateBackgroundOpacity(self.parent.backgroundOpacity)
+
+
+    def __showInfoBar(self, type, title, content):
+        if type == "success":
+            InfoBar.success(
+                title=title,
+                content=content,
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.BOTTOM,
+                duration=3000,
+                parent=self
+            )
+        elif type == "warning":
+            InfoBar.warning(
+                title=title,
+                content=content,
+                orient=Qt.Horizontal,
+                isClosable=False,
+                position=InfoBarPosition.BOTTOM,
+                duration=3000,
+                parent=self
+            )
+        elif type == "error":
+            InfoBar.error(
+                title=title,
+                content=content,
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.BOTTOM_RIGHT,
+                duration=3000,
+                parent=self
+            )
+
+
+    def __copySelectedFile(self, filePath, targetFolder):
+        fileName = os.path.basename(filePath)
+        targetPath = os.path.join(targetFolder, fileName)
+
+        if os.path.exists(targetPath):
+            return None
+        else:
+            shutil.copy(filePath, targetPath)
+            return targetPath
