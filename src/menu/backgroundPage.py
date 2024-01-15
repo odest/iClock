@@ -28,14 +28,15 @@ class BackgroundPage(QWidget):
         self.filePickerMiniButton = ToolButton(FIF.FOLDER_ADD, self)
         self.filePickerMiniButton.setMaximumSize(32, 32)
         self.HBoxLayout1.addWidget(self.filePickerMiniButton)
-        self.bgColorPickerMiniButton = PushButton(self)
-        self.bgColorPickerMiniButton.setStyleSheet("PushButton {background: rgba%s; border-radius: 5px;}" % str(self.parent.backgroundColor))
-        self.bgColorPickerMiniButton.setMaximumSize(32, 32)
+        self.colorPickerMiniButton = PushButton(self)
+        self.colorPickerMiniButton.clicked.connect(lambda: self.showColorDialog(self.updateBackgroundColor, self.parent.backgroundColor))
+        self.colorPickerMiniButton.setStyleSheet("PushButton {background: rgba%s; border-radius: 5px;}" % str(self.parent.backgroundColor))
+        self.colorPickerMiniButton.setMaximumSize(32, 32)
         if self.parent.backgroundType == "Color":
             self.filePickerMiniButton.setVisible(False)
         else:
-            self.bgColorPickerMiniButton.setVisible(False)
-        self.HBoxLayout1.addWidget(self.bgColorPickerMiniButton)
+            self.colorPickerMiniButton.setVisible(False)
+        self.HBoxLayout1.addWidget(self.colorPickerMiniButton)
         self.mainVBoxLayout.addLayout(self.HBoxLayout1)
 
         self.HBoxLayout2 = QHBoxLayout()
@@ -118,6 +119,13 @@ class BackgroundPage(QWidget):
             self.durationSlider.setValue(int(self.parent.backgroundAnimationDuration))
             self.HBoxLayout7.addWidget(self.durationSlider)
             self.mainVBoxLayout.addLayout(self.HBoxLayout7)
+
+
+    def updateBackgroundColor(self, color):
+        r, g, b, _ = color.getRgb()
+        self.parent.backgroundColor = (r, g, b, self.parent.backgroundColor[3])
+        self.parent.backgroundLayer.setStyleSheet(f"background-color: rgba{self.parent.backgroundColor}; border-radius:{self.parent.backgroundBorderRadius}px;")
+        self.colorPickerMiniButton.setStyleSheet("PushButton {background: rgba%s; border-radius: 5px;}" % str(self.parent.backgroundColor))
 
 
     def updateBorderColor(self, color):
