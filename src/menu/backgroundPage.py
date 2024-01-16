@@ -123,6 +123,7 @@ class BackgroundPage(QWidget):
             self.durationSlider.setTickInterval(1)
             self.durationSlider.setSingleStep(1)
             self.durationSlider.setValue(int(self.parent.backgroundAnimationDuration))
+            self.durationSlider.valueChanged.connect(lambda value: self.sliderEvent("Duration", self.durationSlider, self.durationLabel))
             self.HBoxLayout7.addWidget(self.durationSlider)
             self.mainVBoxLayout.addLayout(self.HBoxLayout7)
 
@@ -228,6 +229,16 @@ class BackgroundPage(QWidget):
                 value = 0.1
             self.parent.backgroundOpacity = value
             self.parent.updateBackgroundOpacity(self.parent.backgroundOpacity)
+
+        elif whichWidget == "Duration":
+            self.parent.backgroundAnimationDuration = value
+            if value == 0:
+                self.parent.animationTimer.stop()
+                self.parent.backgroundAnimationDuration = 0
+                self.parent.backgroundAnimation = False
+            else:
+                self.parent.animationTimer.start(self.parent.backgroundAnimationDuration)
+                self.parent.backgroundAnimation = True
 
 
     def __showInfoBar(self, type, title, content):
