@@ -70,6 +70,7 @@ class TextPage(QWidget):
         self.opacitySlider.setTickInterval(1)
         self.opacitySlider.setSingleStep(1)
         self.opacitySlider.setValue(int(self.parent.textOpacity))
+        self.opacitySlider.valueChanged.connect(lambda value: self.sliderEvent("Opacity", self.opacitySlider, self.opacityLabel))
         self.HBoxLayout4.addWidget(self.opacitySlider)
         self.mainVBoxLayout.addLayout(self.HBoxLayout4)
 
@@ -135,3 +136,10 @@ class TextPage(QWidget):
             self.parent.clockFont = QFont(self.parent.fontFamily, self.parent.clockFontSize)
             self.parent.clockText.setFont(self.parent.clockFont)
             self.parent.blinkingColonText.setFont(self.parent.clockFont)
+
+        elif whichWidget == "Opacity":
+            self.parent.textOpacity = value
+            self.parent.textColor = self.parent.textColor[:-1] + (int(value * 2.55),)
+            color = f"rgba{str(self.parent.textColor[:-1] + (value * 0.01,))}"
+            self.parent.clockText.setStyleSheet(f'background-color : transparent; color: {color};')
+            self.colorPickerMiniButton.setStyleSheet("PushButton {background: %s; border-radius: 5px;}" % color)
