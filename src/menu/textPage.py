@@ -26,10 +26,11 @@ class TextPage(QWidget):
         self.HBoxLayout1.addWidget(self.sizeLabel)
         self.sizeSlider = Slider(Qt.Horizontal, self)
         self.sizeSlider.setMinimum(1)
-        self.sizeSlider.setMaximum(self.parent.clockFontSize * 2)
+        self.sizeSlider.setMaximum(int(self.parent.windowHeight / 1.5))
         self.sizeSlider.setTickInterval(1)
         self.sizeSlider.setSingleStep(1)
         self.sizeSlider.setValue(int(self.parent.clockFontSize))
+        self.sizeSlider.valueChanged.connect(lambda value: self.sliderEvent("Size", self.sizeSlider, self.sizeLabel))
         self.HBoxLayout1.addWidget(self.sizeSlider)
         self.mainVBoxLayout.addLayout(self.HBoxLayout1)
 
@@ -120,3 +121,17 @@ class TextPage(QWidget):
         self.filePickerMiniButton.setMaximumSize(32, 32)
         self.HBoxLayout8.addWidget(self.filePickerMiniButton)
         self.mainVBoxLayout.addLayout(self.HBoxLayout8)
+
+
+    def sliderEvent(self, whichWidget, slider, label):
+        value = slider.value()
+        if whichWidget == "Opacity":
+            label.setText(f"{whichWidget}: %{value}")
+        else:
+            label.setText(f"{whichWidget}: {value}")
+
+        if whichWidget == "Size":
+            self.parent.clockFontSize = value
+            self.parent.clockFont = QFont(self.parent.fontFamily, self.parent.clockFontSize)
+            self.parent.clockText.setFont(self.parent.clockFont)
+            self.parent.blinkingColonText.setFont(self.parent.clockFont)
