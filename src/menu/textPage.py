@@ -44,6 +44,7 @@ class TextPage(QWidget):
         self.xCoordSlider.setTickInterval(1)
         self.xCoordSlider.setSingleStep(1)
         self.xCoordSlider.setValue(int(self.parent.textXCoord))
+        self.xCoordSlider.valueChanged.connect(lambda value: self.sliderEvent("X Coord", self.xCoordSlider, self.xCoordLabel))
         self.HBoxLayout2.addWidget(self.xCoordSlider)
         self.mainVBoxLayout.addLayout(self.HBoxLayout2)
 
@@ -57,6 +58,7 @@ class TextPage(QWidget):
         self.yCoordSlider.setTickInterval(1)
         self.yCoordSlider.setSingleStep(1)
         self.yCoordSlider.setValue(int(self.parent.textYCoord))
+        self.yCoordSlider.valueChanged.connect(lambda value: self.sliderEvent("Y Coord", self.yCoordSlider, self.yCoordLabel))
         self.HBoxLayout3.addWidget(self.yCoordSlider)
         self.mainVBoxLayout.addLayout(self.HBoxLayout3)
 
@@ -136,6 +138,16 @@ class TextPage(QWidget):
             self.parent.clockFont = QFont(self.parent.fontFamily, self.parent.clockFontSize)
             self.parent.clockText.setFont(self.parent.clockFont)
             self.parent.blinkingColonText.setFont(self.parent.clockFont)
+
+        elif whichWidget == "X Coord":
+            self.parent.textXCoord = value
+            self.parent.clockText.move(self.parent.textXCoord, self.parent.textYCoord)
+            self.parent.blinkingColonText.move(self.parent.textXCoord, self.parent.textYCoord)
+
+        elif whichWidget == "Y Coord":
+            self.parent.textYCoord = value
+            self.parent.clockText.move(self.parent.textXCoord, self.parent.textYCoord)
+            self.parent.blinkingColonText.move(self.parent.textXCoord, self.parent.textYCoord)
 
         elif whichWidget == "Opacity":
             self.parent.textOpacity = value
