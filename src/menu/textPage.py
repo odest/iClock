@@ -89,8 +89,10 @@ class TextPage(QWidget):
 
         self.HBoxLayout6 = QHBoxLayout()
         self.iconsNormalColorPickerButton = PushButton('Set Icons Normal Color', self, FIF.PALETTE)
+        self.iconsNormalColorPickerButton.clicked.connect(lambda: self.showColorDialog("normal icon", self.parent.iconNormalColor))
         self.HBoxLayout6.addWidget(self.iconsNormalColorPickerButton)
         self.iconsNormalColorPickerMiniButton = PushButton(self)
+        self.iconsNormalColorPickerMiniButton.clicked.connect(lambda: self.showColorDialog("normal icon", self.parent.iconNormalColor))
         self.iconsNormalColorPickerMiniButton.setStyleSheet("PushButton {background: rgb%s; border-radius: 5px;}" % str(self.parent.iconNormalColor))
         self.iconsNormalColorPickerMiniButton.setMaximumSize(32, 32)
         self.HBoxLayout6.addWidget(self.iconsNormalColorPickerMiniButton)
@@ -98,8 +100,10 @@ class TextPage(QWidget):
 
         self.HBoxLayout7 = QHBoxLayout()
         self.iconsHoverColorPickerButton = PushButton('Set Icons Hover Color', self, FIF.PALETTE)
+        self.iconsHoverColorPickerButton.clicked.connect(lambda: self.showColorDialog("hover icon", self.parent.iconHoverColor))
         self.HBoxLayout7.addWidget(self.iconsHoverColorPickerButton)
         self.iconsHoverColorPickerMiniButton = PushButton(self)
+        self.iconsHoverColorPickerMiniButton.clicked.connect(lambda: self.showColorDialog("hover icon", self.parent.iconHoverColor))
         self.iconsHoverColorPickerMiniButton.setStyleSheet("PushButton {background: rgb%s; border-radius: 5px;}" % str(self.parent.iconHoverColor))
         self.iconsHoverColorPickerMiniButton.setMaximumSize(32, 32)
         self.HBoxLayout7.addWidget(self.iconsHoverColorPickerMiniButton)
@@ -135,6 +139,18 @@ class TextPage(QWidget):
         self.parent.blinkingColonText.setStyleSheet(f'background-color: transparent; color: rgba{self.parent.textColor};')
         self.parent.dateText.setStyleSheet(f'background-color: transparent; color: rgba{self.parent.textColor};')
         self.colorPickerMiniButton.setStyleSheet("PushButton {background: rgba%s; border-radius: 5px;}" % str(self.parent.textColor))
+
+
+    def updateNormalIconColor(self, color):
+        r, g, b, _ = color.getRgb()
+        self.__tempIconNormalColor = (r, g, b)
+        self.iconsNormalColorPickerMiniButton.setStyleSheet("PushButton {background: rgb%s; border-radius: 5px;}" % str((r, g, b)))
+
+
+    def updateHoverIconColor(self, color):
+        r, g, b, _ = color.getRgb()
+        self.parent.iconHoverColor = (r, g, b)
+        self.iconsHoverColorPickerMiniButton.setStyleSheet("PushButton {background: rgb%s; border-radius: 5px;}" % str((r, g, b)))
 
 
     def sliderEvent(self, whichWidget, slider, label):
@@ -174,4 +190,18 @@ class TextPage(QWidget):
         if type == "text":
             color_dialog.currentColorChanged.connect(self.updateTextColor)
 
-        color_dialog.exec_()
+        elif type == "normal icon":
+            __oldNormalIconColor = self.parent.iconNormalColor
+            self.__tempIconNormalColor = None
+            color_dialog.currentColorChanged.connect(self.updateNormalIconColor)
+
+        elif type == "hover icon":
+            color_dialog.currentColorChanged.connect(self.updateHoverIconColor)
+
+        if color_dialog.exec_():
+            if type == "normal icon":
+                self.parent.iconNormalColor = self.__tempIconNormalColor
+                self.parent.updateSVG(__oldNormalIconColor, self.parent.iconNormalColor)
+        else:
+            if type == "normal icon":
+                self.iconsNormalColorPickerMiniButton.setStyleSheet("PushButton {background: rgb%s; border-radius: 5px;}" % str(__oldNormalIconColor))
