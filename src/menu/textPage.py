@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout
-from PyQt5.QtGui import QFont, QFontDatabase
+from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QColorDialog
+from PyQt5.QtGui import QFont, QFontDatabase, QColor
 from PyQt5.QtCore import Qt
 
 from lib import Slider, PushButton, ComboBox, ToolButton
@@ -78,8 +78,10 @@ class TextPage(QWidget):
 
         self.HBoxLayout5 = QHBoxLayout()
         self.colorPickerButton = PushButton('Set Text Color', self, FIF.PALETTE)
+        self.colorPickerButton.clicked.connect(lambda: self.showColorDialog("text", self.parent.textColor))
         self.HBoxLayout5.addWidget(self.colorPickerButton)
         self.colorPickerMiniButton = PushButton(self)
+        self.colorPickerMiniButton.clicked.connect(lambda: self.showColorDialog("text", self.parent.textColor))
         self.colorPickerMiniButton.setStyleSheet("PushButton {background: rgba%s; border-radius: 5px;}" % str(self.parent.textColor))
         self.colorPickerMiniButton.setMaximumSize(32, 32)
         self.HBoxLayout5.addWidget(self.colorPickerMiniButton)
@@ -126,6 +128,15 @@ class TextPage(QWidget):
         self.mainVBoxLayout.addLayout(self.HBoxLayout8)
 
 
+    def updateTextColor(self, color):
+        r, g, b, a = color.getRgb()
+        self.parent.textColor = (r, g, b, self.parent.textColor[3])
+        self.parent.clockText.setStyleSheet(f'background-color: transparent; color: rgba{self.parent.textColor};')
+        self.parent.blinkingColonText.setStyleSheet(f'background-color: transparent; color: rgba{self.parent.textColor};')
+        self.parent.dateText.setStyleSheet(f'background-color: transparent; color: rgba{self.parent.textColor};')
+        self.colorPickerMiniButton.setStyleSheet("PushButton {background: rgba%s; border-radius: 5px;}" % str(self.parent.textColor))
+
+
     def sliderEvent(self, whichWidget, slider, label):
         value = slider.value()
         if whichWidget == "Opacity":
@@ -155,3 +166,12 @@ class TextPage(QWidget):
             color = f"rgba{str(self.parent.textColor[:-1] + (value * 0.01,))}"
             self.parent.clockText.setStyleSheet(f'background-color : transparent; color: {color};')
             self.colorPickerMiniButton.setStyleSheet("PushButton {background: %s; border-radius: 5px;}" % color)
+
+
+    def showColorDialog(self, type, currentColor):
+        color_dialog = QColorDialog(QColor(*currentColor), self)
+        color_dialog.setStyleSheet("QColorDialog {background: QLinearGradient( x1: 0, y1: 0,x2: 1, y2: 0, stop: 0 rgb(7,43,71), stop: 1 rgb(12,76,125)); color: black;}")
+        if type == "text":
+            color_dialog.currentColorChanged.connect(self.updateTextColor)
+
+        color_dialog.exec_()
