@@ -1,10 +1,11 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QColorDialog
+from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QColorDialog, QFileDialog
 from PyQt5.QtGui import QFont, QFontDatabase, QColor
 from PyQt5.QtCore import Qt
 
-from lib import Slider, PushButton, ComboBox, ToolButton
+from lib import Slider, PushButton, ComboBox, ToolButton, InfoBar, InfoBarPosition
 from lib import FluentIcon as FIF
 
+import shutil
 import os
 
 
@@ -125,8 +126,10 @@ class TextPage(QWidget):
             fonts.append(font)
         self.fontComboBox.addItems(items, fonts)
         self.fontComboBox.setCurrentIndex(items.index(str(self.parent.fontFamily)))
+        self.fontComboBox.currentTextChanged.connect(lambda i: self.comboBoxSelect(i))
         self.HBoxLayout8.addWidget(self.fontComboBox)
         self.filePickerMiniButton = ToolButton(FIF.FOLDER_ADD, self)
+        self.filePickerMiniButton.clicked.connect(self.showFileDialog)
         self.filePickerMiniButton.setMaximumSize(32, 32)
         self.HBoxLayout8.addWidget(self.filePickerMiniButton)
         self.mainVBoxLayout.addLayout(self.HBoxLayout8)
@@ -205,3 +208,93 @@ class TextPage(QWidget):
         else:
             if type == "normal icon":
                 self.iconsNormalColorPickerMiniButton.setStyleSheet("PushButton {background: rgb%s; border-radius: 5px;}" % str(__oldNormalIconColor))
+
+
+    def showFileDialog(self):
+        fontPath, _ = QFileDialog.getOpenFileName(self, "Select Font", "", "Fonts (*.ttf *.otf)")
+
+        if fontPath:
+            try:
+                fontID = QFontDatabase.addApplicationFont(fontPath)
+                fontFamily = QFontDatabase.applicationFontFamilies(fontID)[0]
+
+                targetFolder = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "assets", "fonts")
+                copiedFontPath = self.copySelectedFile(fontPath, targetFolder)
+                if copiedFontPath:
+                    self.fontComboBox.setPlaceholderText("Selected Font:"),
+                    self.fontComboBox.clear()
+                    fontNameList = [os.path.basename(file) for file in os.listdir(self.folderPath) if os.path.isfile(os.path.join(self.folderPath, file)) and file.lower().endswith((".ttf", ".otf"))]
+                    items = []
+                    fonts = []
+                    for i in fontNameList:
+                        _fontID = QFontDatabase.addApplicationFont(f'{self.folderPath}{i}')
+                        _fontFamily = QFontDatabase.applicationFontFamilies(_fontID)[0]
+                        font = QFont(_fontFamily, 15)
+                        self.fontDict[_fontFamily] = i
+                        items.append(_fontFamily)
+                        fonts.append(font)
+                    self.fontComboBox.addItems(items, fonts)
+                    self.fontComboBox.setCurrentIndex(items.index(str(fontFamily)))
+                    self.comboBoxSelect(fontFamily)
+
+                    self.showInfoBar("success", "SUCCESS", "The selected font has been added to the Font List.")
+
+                else:
+                    self.showInfoBar("warning", "WARNING", "The selected font is already in the Font List!")
+
+            except Exception as e:
+                self.showInfoBar("error", "ERROR", "Please select a valid font file!")
+
+
+    def comboBoxSelect(self, text):
+        self.parent.fontFamily = text
+        self.parent.font = self.fontDict[text]
+        self.parent.clockFont = QFont(text, self.parent.clockFontSize)
+        self.parent.dateFont = QFont(text, self.parent.dateFontSize)
+        self.parent.clockText.setFont(self.parent.clockFont)
+        self.parent.dateText.setFont(self.parent.dateFont)
+        self.parent.blinkingColonText.setFont(self.parent.clockFont)
+
+
+    def showInfoBar(self, type, title, content):
+        if type == "success":
+            InfoBar.success(
+                title=title,
+                content=content,
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.BOTTOM,
+                duration=3000,
+                parent=self
+            )
+        elif type == "warning":
+            InfoBar.warning(
+                title=title,
+                content=content,
+                orient=Qt.Horizontal,
+                isClosable=False,
+                position=InfoBarPosition.BOTTOM,
+                duration=3000,
+                parent=self
+            )
+        elif type == "error":
+            InfoBar.error(
+                title=title,
+                content=content,
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.BOTTOM_RIGHT,
+                duration=3000,
+                parent=self
+            )
+
+
+    def copySelectedFile(self, filePath, targetFolder):
+        fileName = os.path.basename(filePath)
+        targetPath = os.path.join(targetFolder, fileName)
+
+        if os.path.exists(targetPath):
+            return None
+        else:
+            shutil.copy(filePath, targetPath)
+            return targetPath
