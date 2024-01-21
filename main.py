@@ -21,6 +21,7 @@ class MainWindow(QMainWindow):
         self.initWidgets()
         self.setWidgets()
         self.updateTaskbarEvent(self)
+        self.updateStaysOnTopEvent(self)
 
 
     def initVar(self):
@@ -315,6 +316,16 @@ class MainWindow(QMainWindow):
             window.setWindowFlag(Qt.Tool, False)
         else:
             window.setWindowFlag(Qt.Tool, True)
+        self.show()
+        if self.editMenu:
+            self.editMenu.show()
+
+
+    def updateStaysOnTopEvent(self, window):
+        if self.staysOnTop:
+            window.setWindowFlags(window.windowFlags() | Qt.WindowStaysOnTopHint)
+        else:
+            window.setWindowFlags(window.windowFlags() & ~Qt.WindowStaysOnTopHint)
         self.show()
         if self.editMenu:
             self.editMenu.show()

@@ -58,6 +58,7 @@ class SettingsPage(QWidget):
         else:
             self.staysOnTopSwitch.setChecked(False)
         self.staysOnTopSwitch.setText("")
+        self.staysOnTopSwitch.checkedChanged.connect(lambda i: self.switchEvent(i, "Stays on Top", self.staysOnTopSwitch))
         self.HBoxLayout3.addWidget(self.staysOnTopSwitch)
         self.mainVBoxLayout.addLayout(self.HBoxLayout3)
 
@@ -104,11 +105,19 @@ class SettingsPage(QWidget):
                 self.parent.showOnTaskbar = True
                 self.parent.updateTaskbarEvent(self.parent)
                 self.parent.updateTaskbarEvent(self.menu)
+            elif value == "Stays on Top":
+                self.parent.staysOnTop = True
+                self.parent.updateStaysOnTopEvent(self.parent)
+                self.parent.updateStaysOnTopEvent(self.menu)
 
         else:
             if value == "Show on Taskbar":
                 self.parent.showOnTaskbar = False
                 self.parent.updateTaskbarEvent(self.parent)
                 self.parent.updateTaskbarEvent(self.menu)
+            elif value == "Stays on Top":
+                self.parent.staysOnTop = False
+                self.parent.updateStaysOnTopEvent(self.parent)
+                self.parent.updateStaysOnTopEvent(self.menu)
 
         switch.setText("")
