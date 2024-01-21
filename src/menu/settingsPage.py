@@ -42,6 +42,7 @@ class SettingsPage(QWidget):
         else:
             self.tastbarSwitch.setChecked(False)
         self.tastbarSwitch.setText("")
+        self.tastbarSwitch.checkedChanged.connect(lambda i: self.switchEvent(i, "Show on Taskbar", self.tastbarSwitch))
         self.HBoxLayout2.addWidget(self.tastbarSwitch)
         self.mainVBoxLayout.addLayout(self.HBoxLayout2)
 
@@ -95,3 +96,19 @@ class SettingsPage(QWidget):
         self.backToDefaultButton.clicked.connect(self.parent.backToDefault)
         self.HBoxLayout6.addWidget(self.backToDefaultButton)
         self.mainVBoxLayout.addLayout(self.HBoxLayout6)
+
+
+    def switchEvent(self, isChecked: bool, value, switch):
+        if isChecked:
+            if value == "Show on Taskbar":
+                self.parent.showOnTaskbar = True
+                self.parent.updateTaskbarEvent(self.parent)
+                self.parent.updateTaskbarEvent(self.menu)
+
+        else:
+            if value == "Show on Taskbar":
+                self.parent.showOnTaskbar = False
+                self.parent.updateTaskbarEvent(self.parent)
+                self.parent.updateTaskbarEvent(self.menu)
+
+        switch.setText("")

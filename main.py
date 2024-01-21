@@ -20,6 +20,7 @@ class MainWindow(QMainWindow):
         self.initWindow()
         self.initWidgets()
         self.setWidgets()
+        self.updateTaskbarEvent(self)
 
 
     def initVar(self):
@@ -307,6 +308,16 @@ class MainWindow(QMainWindow):
         self.backgroundLayer.setGraphicsEffect(self.backgroundLayerOpacityEffect)
         self.topLayerOpacityEffect.setOpacity(value * 0.01)
         self.topLayer.setGraphicsEffect(self.topLayerOpacityEffect)
+
+
+    def updateTaskbarEvent(self, window):
+        if self.showOnTaskbar:
+            window.setWindowFlag(Qt.Tool, False)
+        else:
+            window.setWindowFlag(Qt.Tool, True)
+        self.show()
+        if self.editMenu:
+            self.editMenu.show()
 
 
     def eventFilter(self, object, event):
