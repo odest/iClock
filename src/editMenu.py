@@ -62,6 +62,7 @@ class EditMenu(AcrylicWindow):
         self.mainButtonHBoxLayout.addWidget(self.cancelbutton)
         self.mainButtonHBoxLayout.addWidget(self.saveButton)
         self.mainButtonWidget.setLayout(self.mainButtonHBoxLayout)
+        self.updateToolTips()
 
         self.mainVBoxLayout.addWidget(self.pivot)
         self.mainVBoxLayout.addWidget(self.stackedWidget)
@@ -87,6 +88,14 @@ class EditMenu(AcrylicWindow):
     def onCurrentIndexChanged(self, index):
         widget = self.stackedWidget.widget(index)
         self.pivot.setCurrentItem(widget.objectName())
+
+
+    def updateToolTips(self):
+        self.parent.setToolTip(self.saveButton, 'Close with saving all changes')
+        self.parent.setToolTip(self.cancelbutton, 'Close without saving changes')
+        self.backgroundPage.updateToolTips()
+        self.textPage.updateToolTips()
+        self.settingsPage.updateToolTips()
 
 
     def closeEvent(self, event):

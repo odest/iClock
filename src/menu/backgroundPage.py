@@ -128,6 +128,22 @@ class BackgroundPage(QWidget):
             self.mainVBoxLayout.addLayout(self.HBoxLayout7)
 
 
+    def updateToolTips(self):
+        self.parent.setToolTip(self.backgroundTypeComboBox, 'Choose background type')
+        if self.parent.backgroundType == "Image":
+            self.parent.setToolTip(self.filePickerMiniButton, 'Set background image')
+        elif self.parent.backgroundType == "Gif":
+            self.parent.setToolTip(self.filePickerMiniButton, 'Set background gif')
+            self.parent.setToolTip(self.durationSlider, 'Set background animation duration')
+        self.parent.setToolTip(self.colorPickerMiniButton, 'Set background color')
+
+        self.parent.setToolTip(self.borderColorPickerMiniButton, 'Set border color')
+        self.parent.setToolTip(self.borderOpacitySlider, 'Set border opacity')
+        self.parent.setToolTip(self.borderSizeSlider, 'Set border size')
+        self.parent.setToolTip(self.borderRadiusSlider, 'Set border radius')
+        self.parent.setToolTip(self.opacitySlider, 'Set background opacity')
+
+
     def updateBackgroundColor(self, color):
         r, g, b, _ = color.getRgb()
         self.parent.backgroundColor = (r, g, b, self.parent.backgroundColor[3])

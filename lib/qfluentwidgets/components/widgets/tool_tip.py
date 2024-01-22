@@ -40,6 +40,29 @@ class ToolTip(QFrame):
         self.__text = text
         self.__duration = 1000
 
+        self.qss = """ToolTip {
+            border-radius: 4px;
+        }
+
+        ToolTip > #container {
+            background-color: QLinearGradient( x1: 0, y1: 0,x2: 1, y2: 0, stop: 0 rgba(7,43,71,0.7), stop: 1 rgba(12,76,125,0.7));
+            border: 1px solid QLinearGradient( x1: 0, y1: 0,x2: 1, y2: 0, stop: 0 rgba(12,76,125,0.7), stop: 1 rgba(7,43,71,0.7));
+            border-radius: 4px;
+        }
+
+        ToolTip>#container[transparent=true] {
+            background-color: transparent;
+            border: 1px solid rgba(0, 0, 0, 50);
+        }
+
+        QLabel {
+            background-color: transparent;
+            font: 12px 'Segoe UI', 'Microsoft YaHei', 'PingFang SC';
+            color: white;
+            border: none;
+        }
+        """
+
         self.container = self._createContainer()
         self.timer = QTimer(self)
 
@@ -100,7 +123,7 @@ class ToolTip(QFrame):
         """ set style sheet """
         self.container.setObjectName("container")
         self.label.setObjectName("contentLabel")
-        FluentStyleSheet.TOOL_TIP.apply(self)
+        self.setStyleSheet(self.qss)
         self.label.adjustSize()
         self.adjustSize()
 

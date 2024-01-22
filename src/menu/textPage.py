@@ -135,6 +135,18 @@ class TextPage(QWidget):
         self.mainVBoxLayout.addLayout(self.HBoxLayout8)
 
 
+    def updateToolTips(self):
+        self.parent.setToolTip(self.sizeSlider, 'Set text size')
+        self.parent.setToolTip(self.xCoordSlider, 'Set text x coord')
+        self.parent.setToolTip(self.yCoordSlider, 'Set text y coord')
+        self.parent.setToolTip(self.opacitySlider, 'Set text opacity')
+        self.parent.setToolTip(self.colorPickerMiniButton, 'Set text color')
+        self.parent.setToolTip(self.iconsNormalColorPickerMiniButton, 'Set icons normal color')
+        self.parent.setToolTip(self.iconsHoverColorPickerMiniButton, 'Set icons hover color')
+        self.parent.setToolTip(self.fontComboBox, 'Choose text font')
+        self.parent.setToolTip(self.filePickerMiniButton, 'Set text font')
+
+
     def updateTextColor(self, color):
         r, g, b, a = color.getRgb()
         self.parent.textColor = (r, g, b, self.parent.textColor[3])

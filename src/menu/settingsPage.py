@@ -27,6 +27,7 @@ class SettingsPage(QWidget):
         else:
             self.showToolTipsSwitch.setChecked(False)
         self.showToolTipsSwitch.setText("")
+        self.showToolTipsSwitch.checkedChanged.connect(lambda i: self.switchEvent(i, "Show ToolTips", self.showToolTipsSwitch))
         self.HBoxLayout1.addWidget(self.showToolTipsSwitch)
         self.mainVBoxLayout.addLayout(self.HBoxLayout1)
 
@@ -99,9 +100,27 @@ class SettingsPage(QWidget):
         self.mainVBoxLayout.addLayout(self.HBoxLayout6)
 
 
+    def updateToolTips(self):
+        self.parent.setToolTip(self.showToolTipsLabel, 'Set tooltips visibility')
+        self.parent.setToolTip(self.showToolTipsSwitch, 'Set tooltips visibility')
+        self.parent.setToolTip(self.taskbarLabel, 'Set whether the widget logo appears on the taskbar')
+        self.parent.setToolTip(self.tastbarSwitch, 'Set whether the widget logo appears on the taskbar')
+        self.parent.setToolTip(self.staysOnTopLabel, 'Set whether the widget stays on top of other apps')
+        self.parent.setToolTip(self.staysOnTopSwitch, 'Set whether the widget stays on top of other apps')
+        self.parent.setToolTip(self.blinkingColonLabel, 'Set whether the colon between hour and minute is visible')
+        self.parent.setToolTip(self.blinkingColonSwitch, 'Set whether the colon between hour and minute is visible')
+        self.parent.setToolTip(self.advancedOptionsLabel, 'Set whether to open advanced configuration settings')
+        self.parent.setToolTip(self.advancedOptionsSwitch, 'Set whether to open advanced configuration settings')
+        self.parent.setToolTip(self.backToDefaultButton, 'Back to default configuration settings')
+
+
     def switchEvent(self, isChecked: bool, value, switch):
         if isChecked:
-            if value == "Show on Taskbar":
+            if value == "Show ToolTips":
+                self.parent.showToolTips = True
+                self.parent.updateToolTips()
+                self.menu.updateToolTips()
+            elif value == "Show on Taskbar":
                 self.parent.showOnTaskbar = True
                 self.parent.updateTaskbarEvent(self.parent)
                 self.parent.updateTaskbarEvent(self.menu)
@@ -111,7 +130,11 @@ class SettingsPage(QWidget):
                 self.parent.updateStaysOnTopEvent(self.menu)
 
         else:
-            if value == "Show on Taskbar":
+            if value == "Show ToolTips":
+                self.parent.showToolTips = False
+                self.parent.updateToolTips()
+                self.menu.updateToolTips()
+            elif value == "Show on Taskbar":
                 self.parent.showOnTaskbar = False
                 self.parent.updateTaskbarEvent(self.parent)
                 self.parent.updateTaskbarEvent(self.menu)

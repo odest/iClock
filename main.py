@@ -5,6 +5,7 @@ from PyQt5.QtSvg import QSvgRenderer
 from PyQt5 import QtCore
 
 from src import EditMenu, SideGrip, ContextMenu
+from lib import ToolTipFilter
 
 from datetime import datetime
 import json
@@ -146,6 +147,8 @@ class MainWindow(QMainWindow):
         self.buttonLayout.addWidget(self.closeButton)
         self.buttons.append(self.closeButton)
         self.closeButton.installEventFilter(self)
+
+        self.updateToolTips()
 
         self.updateSVG((255, 255, 255), self.iconNormalColor)
         self.updateBackgroundOpacity(self.backgroundOpacity)
@@ -329,6 +332,21 @@ class MainWindow(QMainWindow):
         self.show()
         if self.editMenu:
             self.editMenu.show()
+
+
+    def updateToolTips(self):
+        self.setToolTip(self.editButton, 'Open Edit Page')
+        self.setToolTip(self.moveButton, 'Move The Widget')
+        self.setToolTip(self.closeButton, 'Close The Widget')
+
+
+    def setToolTip(self, widget, text):
+        if self.showToolTips:
+            widget.setToolTip(text)
+            widget.installEventFilter(ToolTipFilter(widget))
+            widget.setToolTipDuration(2000)
+        else:
+            widget.setToolTip("")
 
 
     def eventFilter(self, object, event):
