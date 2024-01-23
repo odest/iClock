@@ -98,6 +98,11 @@ class EditMenu(AcrylicWindow):
         self.settingsPage.updateToolTips()
 
 
+    def updateAdvancedOptions(self):
+        self.backgroundPage.updateAdvancedOptions()
+        self.textPage.updateAdvancedOptions()
+
+
     def closeEvent(self, event):
         self.parent.editMenu = None
         self.parent.isOpenEditMenu = False

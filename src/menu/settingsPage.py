@@ -91,6 +91,7 @@ class SettingsPage(QWidget):
         else:
             self.advancedOptionsSwitch.setChecked(False)
         self.advancedOptionsSwitch.setText("")
+        self.advancedOptionsSwitch.checkedChanged.connect(lambda i: self.switchEvent(i, "Advanced Options", self.advancedOptionsSwitch))
         self.HBoxLayout5.addWidget(self.advancedOptionsSwitch)
         self.mainVBoxLayout.addLayout(self.HBoxLayout5)
 
@@ -131,6 +132,9 @@ class SettingsPage(QWidget):
                 self.parent.updateStaysOnTopEvent(self.menu)
             elif value == "Blinking Colon":
                 self.parent.blinkingColonAnimation = True
+            elif value == "Advanced Options":
+                self.parent.advancedOptions = True
+                self.menu.updateAdvancedOptions()
 
         else:
             if value == "Show ToolTips":
@@ -147,5 +151,8 @@ class SettingsPage(QWidget):
                 self.parent.updateStaysOnTopEvent(self.menu)
             elif value == "Blinking Colon":
                 self.parent.blinkingColonAnimation = False
+            elif value == "Advanced Options":
+                self.parent.advancedOptions = False
+                self.menu.updateAdvancedOptions()
 
         switch.setText("")

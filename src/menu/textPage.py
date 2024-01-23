@@ -134,6 +134,15 @@ class TextPage(QWidget):
         self.HBoxLayout8.addWidget(self.filePickerMiniButton)
         self.mainVBoxLayout.addLayout(self.HBoxLayout8)
 
+        self.updateAdvancedOptions()
+
+
+    def updateAdvancedOptions(self):
+        self.iconsNormalColorPickerButton.setVisible(self.parent.advancedOptions)
+        self.iconsNormalColorPickerMiniButton.setVisible(self.parent.advancedOptions)
+        self.iconsHoverColorPickerButton.setVisible(self.parent.advancedOptions)
+        self.iconsHoverColorPickerMiniButton.setVisible(self.parent.advancedOptions)
+
 
     def updateToolTips(self):
         self.parent.setToolTip(self.sizeSlider, 'Set text size')

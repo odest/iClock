@@ -127,6 +127,13 @@ class BackgroundPage(QWidget):
             self.HBoxLayout7.addWidget(self.durationSlider)
             self.mainVBoxLayout.addLayout(self.HBoxLayout7)
 
+        self.updateAdvancedOptions()
+
+
+    def updateAdvancedOptions(self):
+        self.borderOpacityLabel.setVisible(self.parent.advancedOptions)
+        self.borderOpacitySlider.setVisible(self.parent.advancedOptions)
+
 
     def updateToolTips(self):
         self.parent.setToolTip(self.backgroundTypeComboBox, 'Choose background type')
