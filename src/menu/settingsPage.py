@@ -75,6 +75,7 @@ class SettingsPage(QWidget):
         else:
             self.blinkingColonSwitch.setChecked(False)
         self.blinkingColonSwitch.setText("")
+        self.blinkingColonSwitch.checkedChanged.connect(lambda i: self.switchEvent(i, "Blinking Colon", self.blinkingColonSwitch))
         self.HBoxLayout4.addWidget(self.blinkingColonSwitch)
         self.mainVBoxLayout.addLayout(self.HBoxLayout4)
 
@@ -128,6 +129,8 @@ class SettingsPage(QWidget):
                 self.parent.staysOnTop = True
                 self.parent.updateStaysOnTopEvent(self.parent)
                 self.parent.updateStaysOnTopEvent(self.menu)
+            elif value == "Blinking Colon":
+                self.parent.blinkingColonAnimation = True
 
         else:
             if value == "Show ToolTips":
@@ -142,5 +145,7 @@ class SettingsPage(QWidget):
                 self.parent.staysOnTop = False
                 self.parent.updateStaysOnTopEvent(self.parent)
                 self.parent.updateStaysOnTopEvent(self.menu)
+            elif value == "Blinking Colon":
+                self.parent.blinkingColonAnimation = False
 
         switch.setText("")
