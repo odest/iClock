@@ -574,7 +574,63 @@ class MainWindow(QMainWindow):
 
     def backToDefault(self):
         self.user = "default"
+        self.configData["config"] = self.user
         self.beforeRestart()
+
+
+    def save(self):
+        self.user = "custom"
+
+        self.configData["config"] = self.user
+        self.configData[self.user]["background"]["type"] = self.backgroundType
+        self.configData[self.user]["window"]["advancedOptions"] = self.advancedOptions
+        self.configData[self.user]["window"]["isOpenEditMenu"] = self.isOpenEditMenu
+        self.configData[self.user]["window"]["showOnTaskbar"] = self.showOnTaskbar
+        self.configData[self.user]["window"]["showToolTips"] = self.showToolTips
+        self.configData[self.user]["window"]["staysOnTop"] = self.staysOnTop
+        self.configData[self.user]["window"]["size"][self.backgroundType][0] = self.windowHeight
+        self.configData[self.user]["window"]["size"][self.backgroundType][1] = self.windowWidth
+
+        self.configData[self.user]["background"]["type"] = self.backgroundType
+        self.configData[self.user]["background"]["gif"]["normal"] = self.backgroundNormalGif
+        self.configData[self.user]["background"]["gif"]["blur"] = self.backgroundBlurGif
+        self.configData[self.user]["background"]["gif"]["top"] = self.backgroundTopGif
+        self.configData[self.user]["background"]["gif"]["path"] = self.backgroundGifPath
+        self.configData[self.user]["background"]["image"]["normal"] = self.backgroundNormalImage
+        self.configData[self.user]["background"]["image"]["blur"] = self.backgroundBlurImage
+        self.configData[self.user]["background"]["image"]["top"] = self.backgroundTopImage
+        self.configData[self.user]["background"]["image"]["path"] = self.backgroundImagePath
+        self.configData[self.user]["background"]["opacity"] = self.backgroundOpacity
+        self.configData[self.user]["background"]["color"] = self.backgroundColor
+        self.configData[self.user]["background"]["borderSize"] = self.backgroundBorderSize
+        self.configData[self.user]["background"]["borderColor"][self.backgroundType] = self.backgroundBorderColor
+        self.configData[self.user]["background"]["borderRadius"] = self.backgroundBorderRadius
+        self.configData[self.user]["background"]["borderOpacity"] = self.backgroundBorderOpacity
+        self.configData[self.user]["background"]["animation"] = self.backgroundAnimation
+        self.configData[self.user]["background"]["frameCount"] = self.backgroundAnimationFrameCount
+        self.configData[self.user]["background"]["animationCounter"] = self.backgroundAnimationCounter
+        self.configData[self.user]["background"]["animationDuration"] = self.backgroundAnimationDuration
+
+        self.configData[self.user]["text"]["blinkingColonVisibility"] = self.blinkingColonVisibility
+        self.configData[self.user]["text"]["blinkingColonAnimation"] = self.blinkingColonAnimation
+        self.configData[self.user]["text"]["clockFontSize"] = self.clockFontSize
+        self.configData[self.user]["text"]["dateFontSize"] = self.dateFontSize
+        self.configData[self.user]["text"]["color"][self.backgroundType] = self.textColor
+        self.configData[self.user]["text"]["opacity"] = self.textOpacity
+        self.configData[self.user]["text"]["xCoord"] = self.textXCoord
+        self.configData[self.user]["text"]["yCoord"] = self.textYCoord
+        self.configData[self.user]["text"]["fontPath"] = self.fontPath
+        self.configData[self.user]["text"]["font"] = self.font
+        self.configData[self.user]["text"]["iconPath"] = self.iconPath
+        self.configData[self.user]["text"]["iconSize"] = self.iconSize
+        self.configData[self.user]["text"]["iconColor"]["normal"][self.backgroundType] = self.iconNormalColor
+        self.configData[self.user]["text"]["iconColor"]["hover"][self.backgroundType] = self.iconHoverColor
+
+        with open("src/data/config.json", "w") as f:
+            json.dump(self.configData, f, indent=4)
+
+        self.editMenu.close()
+        self.editMenu = None
 
 
     def maximizeWidget(self):

@@ -59,6 +59,7 @@ class EditMenu(AcrylicWindow):
         self.cancelbutton = PushButton('CANCEL')
         self.cancelbutton.clicked.connect(self.closeEvent)
         self.saveButton = PrimaryPushButton('SAVE', self)
+        self.saveButton.clicked.connect(self.parent.save)
         self.mainButtonHBoxLayout.addWidget(self.cancelbutton)
         self.mainButtonHBoxLayout.addWidget(self.saveButton)
         self.mainButtonWidget.setLayout(self.mainButtonHBoxLayout)
