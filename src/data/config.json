@@ -70,7 +70,16 @@
             "animationCounter": 1,
             "animationDuration": 25,
             "frameCount": 200,
-            "customGifCount": 1
+            "customGifCount": 1,
+            "customGifs":{
+                "3ebe9665e6ea4d4c4c033442667722071518ff2806966430b634f111be683aaf": {
+                    "normal": "frames/",
+                    "blur": "blur.jpg",
+                    "top": "top.png",
+                    "path": "src/assets/gifs/default/",
+                    "frameCount": 200
+                }
+            }
         },
         "text": {
             "blinkingColonAnimation": false,
@@ -216,7 +225,16 @@
             "animationCounter": 1,
             "animationDuration": 25,
             "frameCount": 200,
-            "customGifCount": 1
+            "customGifCount": 1,
+            "customGifs":{
+                "3ebe9665e6ea4d4c4c033442667722071518ff2806966430b634f111be683aaf": {
+                    "normal": "frames/",
+                    "blur": "blur.jpg",
+                    "top": "top.png",
+                    "path": "src/assets/gifs/default/",
+                    "frameCount": 200
+                }
+            }
         },
         "text": {
             "blinkingColonAnimation": false,

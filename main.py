@@ -61,6 +61,7 @@ class MainWindow(QMainWindow):
         self.backgroundAnimationCounter = self.configData[self.user]["background"]["animationCounter"]
         self.backgroundAnimationDuration = self.configData[self.user]["background"]["animationDuration"]
         self.backgroundCustomGifCount = self.configData[self.user]["background"]["customGifCount"]
+        self.backgroundCustomGifs = self.configData[self.user]["background"]["customGifs"]
 
         self.blinkingColonVisibility = self.configData[self.user]["text"]["blinkingColonVisibility"]
         self.blinkingColonAnimation = self.configData[self.user]["text"]["blinkingColonAnimation"]
@@ -612,6 +613,7 @@ class MainWindow(QMainWindow):
         self.configData[self.user]["background"]["animationCounter"] = self.backgroundAnimationCounter
         self.configData[self.user]["background"]["animationDuration"] = self.backgroundAnimationDuration
         self.configData[self.user]["background"]["customGifCount"] = self.backgroundCustomGifCount
+        self.configData[self.user]["background"]["customGifs"] = self.backgroundCustomGifs
 
         self.configData[self.user]["text"]["blinkingColonVisibility"] = self.blinkingColonVisibility
         self.configData[self.user]["text"]["blinkingColonAnimation"] = self.blinkingColonAnimation

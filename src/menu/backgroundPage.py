@@ -9,7 +9,9 @@ from src import SplitThread
 
 from PIL import Image, ImageFilter
 
+import hashlib
 import shutil
+import json
 import os
 
 
@@ -189,12 +191,23 @@ class BackgroundPage(QWidget):
 
             if gifPath:
                 try:
-                    targetFolder = f"src/assets/gifs/custom/frames{self.parent.backgroundCustomGifCount}/"
-                    if not os.path.exists(targetFolder):
-                        os.mkdir(targetFolder)
+                    self.hash = self.__hashFile(gifPath)
+                    if self.hash not in self.parent.backgroundCustomGifs:
+                        targetFolder = f"src/assets/gifs/custom/frames{self.parent.backgroundCustomGifCount}/"
+                        if not os.path.exists(targetFolder):
+                            os.mkdir(targetFolder)
 
-                    self.thread = SplitThread(gifPath, "src/assets/gifs/custom/", f"frames{self.parent.backgroundCustomGifCount}/", self.parent.backgroundCustomGifCount)
-                    self.startThread()
+                        self.thread = SplitThread(gifPath, "src/assets/gifs/custom/", f"frames{self.parent.backgroundCustomGifCount}/", self.parent.backgroundCustomGifCount)
+                        self.startThread()
+                    else:
+                        self.parent.backgroundNormalGif = self.parent.backgroundCustomGifs[self.hash]["normal"]
+                        self.parent.backgroundGifPath = self.parent.backgroundCustomGifs[self.hash]["path"]
+                        self.parent.backgroundAnimationFrameCount = self.parent.backgroundCustomGifs[self.hash]["frameCount"]
+                        self.parent.backgroundBlurGif = self.parent.backgroundCustomGifs[self.hash]["blur"]
+                        self.parent.backgroundTopGif = self.parent.backgroundCustomGifs[self.hash]["top"]
+                        self.parent.backgroundAnimationCounter = 1
+
+                        self.__showInfoBar("success", "SUCCESS", "Selected gif update successfully.")
 
                 except Exception as e:
                         self.__showInfoBar("error", "ERROR", "Please select a valid gif file!")
@@ -323,6 +336,14 @@ class BackgroundPage(QWidget):
             return targetPath
 
 
+    def __hashFile(self, fileName):
+        with open(fileName, "rb") as f:
+            sha256 = hashlib.sha256()
+            while chunk := f.read(4096):
+                sha256.update(chunk)
+            return sha256.hexdigest()
+
+
     def startThread(self):
         if not self.thread.isRunning():
             self.stateTooltip = StateToolTip('Gif processing!', 'Please wait...', self)
@@ -343,6 +364,9 @@ class BackgroundPage(QWidget):
         self.stateTooltip.setState(True)
         self.stateTooltip = StateToolTip('Gif processing!', 'Please wait...', self)
 
+        self.parent.user = "custom"
+        self.parent.configData["config"] = self.parent.user
+
         self.parent.backgroundNormalGif = f"frames{self.parent.backgroundCustomGifCount}/"
         self.parent.backgroundGifPath = f"src/assets/gifs/custom/"
         self.parent.backgroundAnimationFrameCount = self.thread.frameCount
@@ -351,4 +375,26 @@ class BackgroundPage(QWidget):
         self.parent.backgroundCustomGifCount += 1
         self.parent.backgroundAnimationCounter = 1
 
+        self.parent.configData[self.parent.user]["background"]["gif"]["normal"] = self.parent.backgroundNormalGif
+        self.parent.configData[self.parent.user]["background"]["gif"]["blur"] = self.parent.backgroundBlurGif
+        self.parent.configData[self.parent.user]["background"]["gif"]["top"] = self.parent.backgroundTopGif
+        self.parent.configData[self.parent.user]["background"]["gif"]["path"] = self.parent.backgroundGifPath
+        self.parent.configData[self.parent.user]["background"]["frameCount"] = self.parent.backgroundAnimationFrameCount
+        self.parent.configData[self.parent.user]["background"]["customGifCount"] = self.parent.backgroundCustomGifCount
+        self.parent.configData[self.parent.user]["background"]["animationCounter"] = self.parent.backgroundAnimationCounter
+
+        self.parent.backgroundCustomGifs[self.hash] = {}
+        self.parent.backgroundCustomGifs[self.hash]["normal"] = self.parent.backgroundNormalGif
+        self.parent.backgroundCustomGifs[self.hash]["path"] = self.parent.backgroundGifPath
+        self.parent.backgroundCustomGifs[self.hash]["frameCount"] = self.parent.backgroundAnimationFrameCount
+        self.parent.backgroundCustomGifs[self.hash]["blur"] = self.parent.backgroundBlurGif
+        self.parent.backgroundCustomGifs[self.hash]["top"] = self.parent.backgroundTopGif
+
+        self.parent.configData[self.parent.user]["background"]["customGifs"] = self.parent.backgroundCustomGifs
+
+        with open("src/data/config.json", "w") as f:
+            json.dump(self.parent.configData, f, indent=4)
+
         self.__showInfoBar("success", "SUCCESS", "Selected gif applied successfully.")
+
+
