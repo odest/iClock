@@ -2,8 +2,10 @@ from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QColorDia
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt
 
-from lib import Slider, PushButton, ComboBox, ToolButton, InfoBar, InfoBarPosition
+from lib import Slider, PushButton, ComboBox, ToolButton, InfoBar, InfoBarPosition, StateToolTip
 from lib import FluentIcon as FIF
+
+from src import SplitThread
 
 from PIL import Image, ImageFilter
 
@@ -183,7 +185,20 @@ class BackgroundPage(QWidget):
 
     def showFileDialog(self):
         if self.parent.backgroundType == "Gif":
-            pass
+            gifPath, _ = QFileDialog.getOpenFileName(self, "Select Gif", "", "Gifs (*.gif)")
+
+            if gifPath:
+                try:
+                    targetFolder = f"src/assets/gifs/custom/frames{self.parent.backgroundCustomGifCount}/"
+                    if not os.path.exists(targetFolder):
+                        os.mkdir(targetFolder)
+
+                    self.thread = SplitThread(gifPath, "src/assets/gifs/custom/", f"frames{self.parent.backgroundCustomGifCount}/", self.parent.backgroundCustomGifCount)
+                    self.startThread()
+
+                except Exception as e:
+                        self.__showInfoBar("error", "ERROR", "Please select a valid gif file!")
+
         elif self.parent.backgroundType == "Image":
             imagePath, _ = QFileDialog.getOpenFileName(self, "Select Image", "", "Images (*.png *.jpg *.jpeg *.webp)")
 
@@ -306,3 +321,34 @@ class BackgroundPage(QWidget):
         else:
             shutil.copy(filePath, targetPath)
             return targetPath
+
+
+    def startThread(self):
+        if not self.thread.isRunning():
+            self.stateTooltip = StateToolTip('Gif processing!', 'Please wait...', self)
+            self.stateTooltip.move(30, 0)
+            self.stateTooltip.show()
+
+            self.thread.updateSignal.connect(self.updateTooltip)
+            self.thread.finished.connect(self.onThreadFinished)
+            self.thread.start()
+
+
+    def updateTooltip(self, counter):
+        self.stateTooltip.setContent(f'Gif processing: {counter}')
+
+
+    def onThreadFinished(self):
+        self.stateTooltip.setContent('Gif processing completed.')
+        self.stateTooltip.setState(True)
+        self.stateTooltip = StateToolTip('Gif processing!', 'Please wait...', self)
+
+        self.parent.backgroundNormalGif = f"frames{self.parent.backgroundCustomGifCount}/"
+        self.parent.backgroundGifPath = f"src/assets/gifs/custom/"
+        self.parent.backgroundAnimationFrameCount = self.thread.frameCount
+        self.parent.backgroundBlurGif = f"blur{self.parent.backgroundCustomGifCount}.jpg"
+        self.parent.backgroundTopGif = None
+        self.parent.backgroundCustomGifCount += 1
+        self.parent.backgroundAnimationCounter = 1
+
+        self.__showInfoBar("success", "SUCCESS", "Selected gif applied successfully.")

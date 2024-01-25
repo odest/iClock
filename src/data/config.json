@@ -69,7 +69,8 @@
             "animation": true,
             "animationCounter": 1,
             "animationDuration": 25,
-            "frameCount": 200
+            "frameCount": 200,
+            "customGifCount": 1
         },
         "text": {
             "blinkingColonAnimation": false,
@@ -213,7 +214,9 @@
             },
             "animation": true,
             "animationCounter": 1,
-            "animationDuration": 25
+            "animationDuration": 25,
+            "frameCount": 200,
+            "customGifCount": 1
         },
         "text": {
             "blinkingColonAnimation": false,
