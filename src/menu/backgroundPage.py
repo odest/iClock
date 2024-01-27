@@ -193,6 +193,8 @@ class BackgroundPage(QWidget):
                 try:
                     self.hash = self.__hashFile(gifPath)
                     if self.hash not in self.parent.backgroundCustomGifs:
+                        if not os.path.exists("src/assets/gifs/custom/"):
+                            os.mkdir("src/assets/gifs/custom/")
                         targetFolder = f"src/assets/gifs/custom/frames{self.parent.backgroundCustomGifCount}/"
                         if not os.path.exists(targetFolder):
                             os.mkdir(targetFolder)
@@ -217,7 +219,9 @@ class BackgroundPage(QWidget):
 
             if imagePath:
                 try:
-                    targetFolder = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "assets", "images", "custom")
+                    targetFolder = "src/assets/images/custom/"
+                    if not os.path.exists(targetFolder):
+                        os.mkdir(targetFolder)
                     copiedImagePath = self.__copySelectedFile(imagePath, targetFolder)
 
                     if copiedImagePath:
@@ -396,5 +400,3 @@ class BackgroundPage(QWidget):
             json.dump(self.parent.configData, f, indent=4)
 
         self.__showInfoBar("success", "SUCCESS", "Selected gif applied successfully.")
-
-
