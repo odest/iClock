@@ -40,6 +40,8 @@ class MainWindow(QMainWindow):
         self.staysOnTop = self.configData[self.user]["window"]["staysOnTop"]
         self.windowHeight = self.configData[self.user]["window"]["size"][self.backgroundType][0]
         self.windowWidth = self.configData[self.user]["window"]["size"][self.backgroundType][1]
+        self.windowXCoord = self.configData[self.user]["window"]["xCoord"]
+        self.windowYCoord = self.configData[self.user]["window"]["yCoord"]
 
         self.backgroundType = self.configData[self.user]["background"]["type"]
         self.backgroundNormalGif = self.configData[self.user]["background"]["gif"]["normal"]
@@ -86,11 +88,13 @@ class MainWindow(QMainWindow):
         """ initialize window """
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground)
-        screenSize = QApplication.desktop().availableGeometry()
-        x = int((screenSize.width() / 2) - (self.windowWidth / 2))
-        y = int(screenSize.height() / 3)
 
-        self.setGeometry(x, y, self.windowWidth, self.windowHeight)
+        if self.user == "default":
+            screenSize = QApplication.desktop().availableGeometry()
+            self.windowXCoord = int((screenSize.width() / 2) - (self.windowWidth / 2))
+            self.windowYCoord = int(screenSize.height() / 3)
+
+        self.setGeometry(self.windowXCoord, self.windowYCoord, self.windowWidth, self.windowHeight)
 
 
     def initWidgets(self):
@@ -423,12 +427,15 @@ class MainWindow(QMainWindow):
 
             elif event.type() == QEvent.MouseButtonRelease:
                 self.isTitlebarPress = False
+                self.__saveWidgetCoord()
                 return True
 
             elif event.type() == QEvent.MouseMove:
                 if (self.isTitlebarPress):
                     distance = event.globalPos()-self.oldpos
                     newwindowpos = self.oldwindowpos + distance
+                    self.windowXCoord = newwindowpos.x()
+                    self.windowYCoord = newwindowpos.y()
                     self.move(newwindowpos)
 
                     if self.editMenu != None:
@@ -530,7 +537,7 @@ class MainWindow(QMainWindow):
                 self.editMenu = None
                 self.isOpenEditMenu = False
 
-        self.configData["default"]["window"]["isOpenEditMenu"] = self.isOpenEditMenu
+        self.configData[self.user]["window"]["isOpenEditMenu"] = self.isOpenEditMenu
         with open("src/data/config.json", "w") as f:
             json.dump(self.configData, f, indent=4)
 
@@ -592,6 +599,8 @@ class MainWindow(QMainWindow):
         self.configData[self.user]["window"]["staysOnTop"] = self.staysOnTop
         self.configData[self.user]["window"]["size"][self.backgroundType][0] = self.windowHeight
         self.configData[self.user]["window"]["size"][self.backgroundType][1] = self.windowWidth
+        self.configData[self.user]["window"]["xCoord"] = self.windowXCoord
+        self.configData[self.user]["window"]["yCoord"] = self.windowYCoord
 
         self.configData[self.user]["background"]["type"] = self.backgroundType
         self.configData[self.user]["background"]["gif"]["normal"] = self.backgroundNormalGif
@@ -654,61 +663,81 @@ class MainWindow(QMainWindow):
             windowGeometry = self.frameGeometry()
             centerOfWindowGeometry = QApplication.desktop().availableGeometry().center()
             windowGeometry.moveCenter(centerOfWindowGeometry)
+            self.windowXCoord = windowGeometry.topLeft().x()
+            self.windowYCoord = windowGeometry.topLeft().y()
             self.move(windowGeometry.topLeft())
+            self.__saveWidgetCoord()
 
             if self.editMenu != None:
                 self.editMenu.move(int(self.x() - (self.editMenu.width() - self.width()) / 2), self.y() + self.height() + 30)
 
         elif align == "Horizontally Centered":
             screenSize = QApplication.desktop().availableGeometry()
-            x = int((screenSize.width() / 2) - (self.windowWidth / 2))
-            y = self.y()
-            self.move(x, y)
+            self.windowXCoord = int((screenSize.width() / 2) - (self.windowWidth / 2))
+            self.windowYCoord = self.y()
+            self.move(self.windowXCoord, self.windowYCoord)
+            self.__saveWidgetCoord()
 
             if self.editMenu != None:
                 self.editMenu.move(int(self.x() - (self.editMenu.width() - self.width()) / 2), self.y() + self.height() + 30)
 
         elif align == "Vertically Centered":
             screenSize = QApplication.desktop().availableGeometry()
-            x = self.x()
-            y = int((screenSize.height() / 2) - (self.windowHeight / 2))
-            self.move(x, y)
+            self.windowXCoord = self.x()
+            self.windowYCoord = int((screenSize.height() / 2) - (self.windowHeight / 2))
+            self.move(self.windowXCoord, self.windowYCoord)
+            self.__saveWidgetCoord()
 
             if self.editMenu != None:
                 self.editMenu.move(int(self.x() - (self.editMenu.width() - self.width()) / 2), self.y() + self.height() + 30)
 
         elif align == "Top Left":
-            self.move(40, 40)
+            self.windowXCoord = 40
+            self.windowYCoord = 40
+            self.move(self.windowXCoord, self.windowYCoord)
+            self.__saveWidgetCoord()
 
             if self.editMenu != None:
                 self.editMenu.move(int(self.x() - (self.editMenu.width() - self.width()) / 2), self.y() + self.height() + 30)
 
         elif align == "Top Right":
             screenSize = QApplication.desktop().availableGeometry()
-            x = int(screenSize.width() - (self.windowWidth + 40))
-            y = 40
-            self.move(x, y)
+            self.windowXCoord = int(screenSize.width() - (self.windowWidth + 40))
+            self.windowYCoord = 40
+            self.move(self.windowXCoord, self.windowYCoord)
+            self.__saveWidgetCoord()
 
             if self.editMenu != None:
                 self.editMenu.move(int(self.x() - (self.editMenu.width() - self.width()) / 2), self.y() + self.height() + 30)
 
         elif align == "Bottom Left":
             screenSize = QApplication.desktop().availableGeometry()
-            x = 40
-            y = int(screenSize.height() - (self.windowHeight + 40))
-            self.move(x, y)
+            self.windowXCoord = 40
+            self.windowYCoord = int(screenSize.height() - (self.windowHeight + 40))
+            self.move(self.windowXCoord, self.windowYCoord)
+            self.__saveWidgetCoord()
 
             if self.editMenu != None:
                 self.editMenu.move(int(self.x() - (self.editMenu.width() - self.width()) / 2), self.y() - self.editMenu.height() - 30)
 
         elif align == "Bottom Right":
             screenSize = QApplication.desktop().availableGeometry()
-            x = int(screenSize.width() - (self.windowWidth + 40))
-            y = int(screenSize.height() - (self.windowHeight + 40))
-            self.move(x, y)
+            self.windowXCoord = int(screenSize.width() - (self.windowWidth + 40))
+            self.windowYCoord = int(screenSize.height() - (self.windowHeight + 40))
+            self.move(self.windowXCoord, self.windowYCoord)
+            self.__saveWidgetCoord()
 
             if self.editMenu != None:
                 self.editMenu.move(int(self.x() - (self.editMenu.width() - self.width()) / 2), self.y() - self.editMenu.height() - 30)
+
+
+    def __saveWidgetCoord(self):
+        self.user = "custom"
+        self.configData["config"] = self.user
+        self.configData[self.user]["window"]["xCoord"] = self.windowXCoord
+        self.configData[self.user]["window"]["yCoord"] = self.windowYCoord
+        with open("src/data/config.json", "w") as f:
+            json.dump(self.configData, f, indent=4)
 
 
     def __loadConfigData(self):

@@ -16,6 +16,8 @@
                     242
                 ]
             },
+            "xCoord": 40,
+            "yCoord": 40,
             "showToolTips": true,
             "staysOnTop": false,
             "showOnTaskbar": true,
@@ -171,6 +173,8 @@
                     242
                 ]
             },
+            "xCoord": 40,
+            "yCoord": 40,
             "showToolTips": true,
             "staysOnTop": false,
             "showOnTaskbar": true,
@@ -178,7 +182,7 @@
             "advancedOptions": false
         },
         "background": {
-            "type": "Image",
+            "type": "Gif",
             "gif": {
                 "normal": "frames/",
                 "blur": "blur.jpg",
