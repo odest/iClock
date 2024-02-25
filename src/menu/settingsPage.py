@@ -3,6 +3,9 @@ from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout
 from lib import SwitchButton, PushButton
 from lib import FluentIcon as FIF
 
+from src import ListCard
+
+
 
 class SettingsPage(QWidget):
     def __init__(self, parent, menu):
@@ -11,108 +14,60 @@ class SettingsPage(QWidget):
         self.parent = parent
         self.menu = menu
         self.mainVBoxLayout = QVBoxLayout(self)
+        self.mainVBoxLayout.setSpacing(10)
         self.initWidgets()
 
 
     def initWidgets(self):
-        self.HBoxLayout1 = QHBoxLayout()
-        self.HBoxLayout1.setObjectName("HBoxLayout1")
-        self.showToolTipsLabel = QLabel("Show ToolTips", self)
-        self.showToolTipsLabel.setStyleSheet("font: 20px 'Segoe UI'; background: transparent; color: white;")
-        self.showToolTipsLabel.setObjectName("showToolTipsLabel")
-        self.HBoxLayout1.addWidget(self.showToolTipsLabel)
-        self.showToolTipsSwitch = SwitchButton(self)
-        if self.parent.showToolTips:
-            self.showToolTipsSwitch.setChecked(True)
-        else:
-            self.showToolTipsSwitch.setChecked(False)
-        self.showToolTipsSwitch.setText("")
-        self.showToolTipsSwitch.checkedChanged.connect(lambda i: self.switchEvent(i, "Show ToolTips", self.showToolTipsSwitch))
-        self.HBoxLayout1.addWidget(self.showToolTipsSwitch)
-        self.mainVBoxLayout.addLayout(self.HBoxLayout1)
+        self.showToolTipsCard = ListCard("Show ToolTips", self)
+        self.showToolTipsCard.switch.setChecked(self.parent.showToolTips)
+        self.showToolTipsCard.switch.setText("")
+        self.showToolTipsCard.switch.checkedChanged.connect(lambda i: self.switchEvent(i, "Show ToolTips", self.showToolTipsCard.switch))
+        self.mainVBoxLayout.addWidget(self.showToolTipsCard)
 
-        self.HBoxLayout2 = QHBoxLayout()
-        self.HBoxLayout2.setObjectName("HBoxLayout2")
-        self.taskbarLabel = QLabel("Show on Taskbar", self)
-        self.taskbarLabel.setStyleSheet("font: 20px 'Segoe UI'; background: transparent; color: white;")
-        self.taskbarLabel.setObjectName("taskbarLabel")
-        self.HBoxLayout2.addWidget(self.taskbarLabel)
-        self.tastbarSwitch = SwitchButton(self)
-        if self.parent.showOnTaskbar:
-            self.tastbarSwitch.setChecked(True)
-        else:
-            self.tastbarSwitch.setChecked(False)
-        self.tastbarSwitch.setText("")
-        self.tastbarSwitch.checkedChanged.connect(lambda i: self.switchEvent(i, "Show on Taskbar", self.tastbarSwitch))
-        self.HBoxLayout2.addWidget(self.tastbarSwitch)
-        self.mainVBoxLayout.addLayout(self.HBoxLayout2)
+        self.taskbarCard = ListCard("Show on Taskbar", self)
+        self.taskbarCard.switch.setChecked(self.parent.showOnTaskbar)
+        self.taskbarCard.switch.setText("")
+        self.taskbarCard.switch.checkedChanged.connect(lambda i: self.switchEvent(i, "Show on Taskbar", self.taskbarCard.switch))
+        self.mainVBoxLayout.addWidget(self.taskbarCard)
 
-        self.HBoxLayout3 = QHBoxLayout()
-        self.HBoxLayout3.setObjectName("HBoxLayout3")
-        self.staysOnTopLabel = QLabel("Stays on Top", self)
-        self.staysOnTopLabel.setStyleSheet("font: 20px 'Segoe UI'; background: transparent; color: white;")
-        self.staysOnTopLabel.setObjectName("staysOnTopLabel")
-        self.HBoxLayout3.addWidget(self.staysOnTopLabel)
-        self.staysOnTopSwitch = SwitchButton(self)
-        if self.parent.staysOnTop:
-            self.staysOnTopSwitch.setChecked(True)
-        else:
-            self.staysOnTopSwitch.setChecked(False)
-        self.staysOnTopSwitch.setText("")
-        self.staysOnTopSwitch.checkedChanged.connect(lambda i: self.switchEvent(i, "Stays on Top", self.staysOnTopSwitch))
-        self.HBoxLayout3.addWidget(self.staysOnTopSwitch)
-        self.mainVBoxLayout.addLayout(self.HBoxLayout3)
+        self.staysOnTopCard = ListCard("Stays on Top", self)
+        self.staysOnTopCard.switch.setChecked(self.parent.staysOnTop)
+        self.staysOnTopCard.switch.setText("")
+        self.staysOnTopCard.switch.checkedChanged.connect(lambda i: self.switchEvent(i, "Stays on Top", self.staysOnTopCard.switch))
+        self.mainVBoxLayout.addWidget(self.staysOnTopCard)
 
-        self.HBoxLayout4 = QHBoxLayout()
-        self.HBoxLayout4.setObjectName("HBoxLayout4")
-        self.blinkingColonLabel = QLabel("Blinking Colon", self)
-        self.blinkingColonLabel.setStyleSheet("font: 20px 'Segoe UI'; background: transparent; color: white;")
-        self.blinkingColonLabel.setObjectName("blinkingColonLabel")
-        self.HBoxLayout4.addWidget(self.blinkingColonLabel)
-        self.blinkingColonSwitch = SwitchButton(self)
-        if self.parent.blinkingColonAnimation:
-            self.blinkingColonSwitch.setChecked(True)
-        else:
-            self.blinkingColonSwitch.setChecked(False)
-        self.blinkingColonSwitch.setText("")
-        self.blinkingColonSwitch.checkedChanged.connect(lambda i: self.switchEvent(i, "Blinking Colon", self.blinkingColonSwitch))
-        self.HBoxLayout4.addWidget(self.blinkingColonSwitch)
-        self.mainVBoxLayout.addLayout(self.HBoxLayout4)
+        self.blinkingColonCard = ListCard("Blinking Colon", self)
+        self.blinkingColonCard.switch.setChecked(self.parent.blinkingColonAnimation)
+        self.blinkingColonCard.switch.setText("")
+        self.blinkingColonCard.switch.checkedChanged.connect(lambda i: self.switchEvent(i, "Blinking Colon", self.blinkingColonCard.switch))
+        self.mainVBoxLayout.addWidget(self.blinkingColonCard)
 
-        self.HBoxLayout5 = QHBoxLayout()
-        self.HBoxLayout5.setObjectName("HBoxLayout5")
-        self.advancedOptionsLabel = QLabel("Advanced Options", self)
-        self.advancedOptionsLabel.setStyleSheet("font: 20px 'Segoe UI'; background: transparent; color: white;")
-        self.advancedOptionsLabel.setObjectName("advancedOptionsLabel")
-        self.HBoxLayout5.addWidget(self.advancedOptionsLabel)
-        self.advancedOptionsSwitch = SwitchButton(self)
-        if self.parent.advancedOptions:
-            self.advancedOptionsSwitch.setChecked(True)
-        else:
-            self.advancedOptionsSwitch.setChecked(False)
-        self.advancedOptionsSwitch.setText("")
-        self.advancedOptionsSwitch.checkedChanged.connect(lambda i: self.switchEvent(i, "Advanced Options", self.advancedOptionsSwitch))
-        self.HBoxLayout5.addWidget(self.advancedOptionsSwitch)
-        self.mainVBoxLayout.addLayout(self.HBoxLayout5)
+        self.advancedOptionsCard = ListCard("Advanced Options", self)
+        self.advancedOptionsCard.switch.setChecked(self.parent.advancedOptions)
+        self.advancedOptionsCard.switch.setText("")
+        self.advancedOptionsCard.switch.checkedChanged.connect(lambda i: self.switchEvent(i, "Advanced Options", self.advancedOptionsCard.switch))
+        self.mainVBoxLayout.addWidget(self.advancedOptionsCard)
 
         self.HBoxLayout6 = QHBoxLayout()
         self.backToDefaultButton = PushButton('Back to Default', self, FIF.LEFT_ARROW)
+        self.backToDefaultButton.setFixedHeight(48)
         self.backToDefaultButton.clicked.connect(self.parent.backToDefault)
         self.HBoxLayout6.addWidget(self.backToDefaultButton)
         self.mainVBoxLayout.addLayout(self.HBoxLayout6)
 
 
     def updateToolTips(self):
-        self.parent.setToolTip(self.showToolTipsLabel, 'Set tooltips visibility')
-        self.parent.setToolTip(self.showToolTipsSwitch, 'Set tooltips visibility')
-        self.parent.setToolTip(self.taskbarLabel, 'Set whether the widget logo appears on the taskbar')
-        self.parent.setToolTip(self.tastbarSwitch, 'Set whether the widget logo appears on the taskbar')
-        self.parent.setToolTip(self.staysOnTopLabel, 'Set whether the widget stays on top of other apps')
-        self.parent.setToolTip(self.staysOnTopSwitch, 'Set whether the widget stays on top of other apps')
-        self.parent.setToolTip(self.blinkingColonLabel, 'Set whether the colon between hour and minute is visible')
-        self.parent.setToolTip(self.blinkingColonSwitch, 'Set whether the colon between hour and minute is visible')
-        self.parent.setToolTip(self.advancedOptionsLabel, 'Set whether to open advanced configuration settings')
-        self.parent.setToolTip(self.advancedOptionsSwitch, 'Set whether to open advanced configuration settings')
+        self.parent.setToolTip(self.showToolTipsCard.title, 'Set tooltips visibility')
+        self.parent.setToolTip(self.showToolTipsCard.switch, 'Set tooltips visibility')
+        self.parent.setToolTip(self.taskbarCard.title, 'Set whether the widget logo appears on the taskbar')
+        self.parent.setToolTip(self.taskbarCard.switch, 'Set whether the widget logo appears on the taskbar')
+        self.parent.setToolTip(self.staysOnTopCard.title, 'Set whether the widget stays on top of other apps')
+        self.parent.setToolTip(self.staysOnTopCard.switch, 'Set whether the widget stays on top of other apps')
+        self.parent.setToolTip(self.blinkingColonCard.title, 'Set whether the colon between hour and minute is visible')
+        self.parent.setToolTip(self.blinkingColonCard.switch, 'Set whether the colon between hour and minute is visible')
+        self.parent.setToolTip(self.advancedOptionsCard.title, 'Set whether to open advanced configuration settings')
+        self.parent.setToolTip(self.advancedOptionsCard.switch, 'Set whether to open advanced configuration settings')
         self.parent.setToolTip(self.backToDefaultButton, 'Back to default configuration settings')
 
 
