@@ -38,6 +38,9 @@ iClock
 
 
 ## Table of Contents
+- [iClock](#iclock)
+  - [](#)
+  - [Table of Contents](#table-of-contents)
   - [Installation and Usage](#installation-and-usage)
   - [Customization Options](#customization-options)
   - [Features](#features)
@@ -166,7 +169,7 @@ iClock
 
 |Windows|Linux|MacOs|
 |--|--|--|
-|<table> <tr><th>Platform</th><th>Test Result</th></tr><tr><td>Windows 11</td><td>${\color{#00FF00}passed}$</td></tr> <tr><td>Windows 10</td><td>${\color{#f28c07}not\space tested}$</td></tr><tr><td>Windows 8.1</td><td>${\color{#f28c07}not\space tested}$</td></tr> <tr><td>Windows 8</td><td>${\color{#f28c07}not\space tested}$</td></tr> <tr><td>Windows 7</td><td>${\color{#f28c07}not\space tested}$</td></tr>  </table>|<table><tr><th>Platform</th><th>Test Result</th></tr><tr><td>MX Linux (MX-23.2 / Fluxbox / x64)</td><td>${\color{#00FF00}passed}$</td></tr></table>| <table> <tr><th>Platform</th><th>Test Result</th></tr><tr><td>macOS 14 (Sonoma)</td><td>${\color{#f28c07}not\space tested}$</td></tr><tr><td>macOS 13 (Ventura)</td><td>${\color{#f28c07}not\space tested}$</td></tr> <tr><td>macOS 12 (Monterey)</td><td>${\color{#f28c07}not\space tested}$</td></tr> <tr><td>macOS 11 (Big Sur)</td><td>${\color{#f28c07}not\space tested}$</td></tr> <tr><td>macOS 10.15 (Catalina)</td><td>${\color{#f28c07}not\space tested}$</td></tr></table>|
+|<table> <tr><th>Platform</th><th>Test Result</th></tr><tr><td>Windows 11</td><td>${\color{#00FF00}passed}$</td></tr> <tr><td>Windows 10</td><td>${\color{#00FF00}passed}$</td></tr><tr><td>Windows 8.1</td><td>${\color{#f28c07}not\space tested}$</td></tr> <tr><td>Windows 8</td><td>${\color{#f28c07}not\space tested}$</td></tr> <tr><td>Windows 7</td><td>${\color{#f28c07}not\space tested}$</td></tr>  </table>|<table><tr><th>Platform</th><th>Test Result</th></tr><tr><td>MX Linux (MX-23.2 / Fluxbox / x64)</td><td>${\color{#00FF00}passed}$</td></tr><tr></tr><tr><td>Debian (12-12.5 / Gnome / x64)</td><td>${\color{#00FF00}passed}$</td></tr></table>| <table> <tr><th>Platform</th><th>Test Result</th></tr><tr><td>macOS 14 (Sonoma)</td><td>${\color{#f28c07}not\space tested}$</td></tr><tr><td>macOS 13 (Ventura)</td><td>${\color{#f28c07}not\space tested}$</td></tr> <tr><td>macOS 12 (Monterey)</td><td>${\color{#f28c07}not\space tested}$</td></tr> <tr><td>macOS 11 (Big Sur)</td><td>${\color{#f28c07}not\space tested}$</td></tr> <tr><td>macOS 10.15 (Catalina)</td><td>${\color{#f28c07}not\space tested}$</td></tr></table>|
 
 <br>
 
