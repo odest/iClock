@@ -9,7 +9,7 @@ class ListCard(CardWidget):
     def __init__(self, title, parent=None):
         super().__init__(parent)
         self.title = title
-        self.setFixedHeight(48)
+        self.setFixedHeight(50)
 
         self.mainLayout = QHBoxLayout(self)
         self.mainLayout.setContentsMargins(20, 11, 11, 11)

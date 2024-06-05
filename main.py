@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QHBoxLayout, QLabel, QSizeGrip, QGraphicsOpacityEffect
-from PyQt5.QtGui import QFontDatabase, QFont, QImage, QPixmap, QPainter, QResizeEvent, QContextMenuEvent
+from PyQt5.QtGui import QFontDatabase, QFontMetrics, QFont, QImage, QPixmap, QPainter, QResizeEvent, QContextMenuEvent
 from PyQt5.QtCore import Qt, QTimer, QTime, QRect, QEvent, QByteArray, QSize
 from PyQt5.QtSvg import QSvgRenderer
 from PyQt5 import QtCore
@@ -104,13 +104,14 @@ class MainWindow(QMainWindow):
         self.backgroundLayer.setGeometry(0, 0, self.windowWidth, self.windowHeight)
         self.backgroundLayerOpacityEffect = QGraphicsOpacityEffect()
 
-        self.clockText = QLabel(self)
-        self.clockText.setAlignment(Qt.AlignCenter)
-        self.clockText.setScaledContents(True)
-
         self.blinkingColonText = QLabel(self)
         self.blinkingColonText.setAlignment(Qt.AlignCenter)
-        self.blinkingColonText.setScaledContents(True)
+
+        self.hourText = QLabel(self)
+        self.hourText.setAlignment(Qt.AlignCenter)
+
+        self.minuteText = QLabel(self)
+        self.minuteText.setAlignment(Qt.AlignCenter)
 
         self.topLayer = QLabel(self)
         self.topLayer.setScaledContents(True)
@@ -190,21 +191,13 @@ class MainWindow(QMainWindow):
         dayName = currentDate.strftime("%A")
         self.dateText.setText(f'{dateString}\n{dayName}')
 
-        if self.blinkingColonAnimation == True:
-            self.clockText.setText(f"{hour} {minute}")
-            self.blinkingColonText.setText(":")
-        else:
-            self.clockText.setText(f"{hour}:{minute}")
+        self.blinkingColonText.setText(":")
+        self.hourText.setText(hour)
+        self.minuteText.setText(minute)
 
-        self.clockText.setFont(self.clockFont)
-        self.clockText.setStyleSheet(f'background-color: transparent; color: rgba{self.textColor};')
-        self.clockText.setGeometry(self.textXCoord, self.textYCoord, self.windowWidth, self.windowHeight)
-
-        self.blinkingColonText.setFont(self.clockFont)
-        self.blinkingColonText.setStyleSheet(f'background-color: transparent; color: rgba{self.textColor};')
-        self.blinkingColonText.setGeometry(self.textXCoord, self.textYCoord, self.windowWidth, self.windowHeight)
-
+        self.updateFontMetrics()
         self.updateWidgets()
+
         if self.backgroundType == "Gif":
             self.animationTimer = QTimer(self)
             self.animationTimer.timeout.connect(self.updateAnimation)
@@ -225,16 +218,40 @@ class MainWindow(QMainWindow):
             self.backgroundLayer.setStyleSheet(f"border-image: url('{self.backgroundImagePath}{self.backgroundNormalImage}'); border-radius:{self.backgroundBorderRadius}px;")
             self.topLayer.setStyleSheet(f"background-color: transparent; border-image: url('{self.backgroundImagePath}{self.backgroundTopImage}'); border-radius:{self.backgroundBorderRadius}px;")
             self.borderLayer.setStyleSheet(f'background-color: transparent; border: {self.backgroundBorderSize}px solid rgba{self.backgroundBorderColor}; border-radius: {self.backgroundBorderRadius}')
-            if self.blinkingColonAnimation == True:
-                self.clockText.setGeometry(self.textXCoord, self.textYCoord - 10, self.windowWidth, self.windowHeight)
-                self.blinkingColonText.setGeometry(self.textXCoord, self.textYCoord - 10, self.windowWidth, self.windowHeight)
-            else:
-                self.clockText.setGeometry(self.textXCoord, self.textYCoord - 10, self.windowWidth, self.windowHeight)
 
         elif self.backgroundType == "Color":
             self.backgroundLayer.setStyleSheet(f"background-color: rgba{self.backgroundColor}; border-radius:{self.backgroundBorderRadius}px;")
             self.topLayer.setStyleSheet(f"background-color: transparent; border-radius:{self.backgroundBorderRadius}px;")
             self.borderLayer.setStyleSheet(f'background-color: transparent; border: {self.backgroundBorderSize}px solid rgba{self.backgroundBorderColor}; border-radius: {self.backgroundBorderRadius}')
+
+
+    def updateFontMetrics(self):
+        self.blinkingColonMetrics = QFontMetrics(self.clockFont)
+        self.blinkingColonWidth = self.blinkingColonMetrics.horizontalAdvance(":")
+        self.blinkingColonHeight = self.blinkingColonMetrics.height()
+        self.blinkingColonText.setFixedSize(self.blinkingColonWidth, self.blinkingColonHeight)
+        if self.user == "default":
+            self.textXCoord = int((self.windowWidth / 2) - (self.blinkingColonWidth / 2))
+            self.textYCoord = int((self.windowHeight / 2) - (self.blinkingColonHeight / 2))
+            if self.backgroundType == "Image":
+                self.textYCoord = (int((self.windowHeight / 2) - (self.blinkingColonHeight / 2)) - 10)
+        self.blinkingColonText.setGeometry(self.textXCoord, self.textYCoord, self.blinkingColonWidth, self.blinkingColonHeight)
+
+        self.hourMetrics = QFontMetrics(self.clockFont)
+        self.hourWidth = self.hourMetrics.horizontalAdvance("99")
+        self.hourHeight = self.hourMetrics.height()
+        self.hourText.setFixedSize(self.hourWidth, self.hourHeight)
+        self.hourXCoord = int(self.textXCoord - self.hourWidth)
+        self.hourYCoord = self.textYCoord
+        self.hourText.setGeometry(self.hourXCoord, self.hourYCoord, self.hourWidth, self.hourHeight)
+
+        self.minuteMetrics = QFontMetrics(self.clockFont)
+        self.minuteWidth = self.minuteMetrics.horizontalAdvance("99")
+        self.minuteHeight = self.minuteMetrics.height()
+        self.minuteText.setFixedSize(self.minuteWidth, self.minuteHeight)
+        self.minuteXCoord = int(self.textXCoord + self.blinkingColonWidth)
+        self.minuteYCoord = self.textYCoord
+        self.minuteText.setGeometry(self.minuteXCoord, self.minuteYCoord, self.minuteWidth, self.minuteHeight)
 
 
     def updateAnimation(self):
@@ -254,21 +271,23 @@ class MainWindow(QMainWindow):
         hour = str(currentTime.hour()).zfill(2)
         minute = str(currentTime.minute()).zfill(2)
 
-        if self.blinkingColonAnimation == True:
-            self.clockText.setText(f"{hour} {minute}")
-            self.clockText.setStyleSheet(f'background-color: transparent; color: rgba{self.textColor};')
-            self.blinkingColonText.setStyleSheet(f'background-color: transparent; color: rgba{self.textColor};')
-            if self.blinkingColonVisibility == True:
-                self.blinkingColonText.setText(" ")
+        self.hourText.setText(hour)
+        self.minuteText.setText(minute)
+
+        self.hourText.setStyleSheet(f"background-color: transparent; color: rgba{self.textColor};")
+        self.minuteText.setStyleSheet(f"background-color: transparent; color: rgba{self.textColor};")
+        self.blinkingColonText.setStyleSheet(f"background-color: transparent; color: rgba{self.textColor};")
+
+        if self.blinkingColonAnimation:
+            if self.blinkingColonVisibility:
+                self.blinkingColonText.setText("")
                 self.blinkingColonVisibility = False
             else:
                 self.blinkingColonText.setText(":")
                 self.blinkingColonVisibility = True
         else:
+            self.blinkingColonText.setText(":")
             self.blinkingColonVisibility = True
-            self.blinkingColonText.setText("")
-            self.clockText.setStyleSheet(f'background-color: transparent; color: rgba{self.textColor};')
-            self.clockText.setText(f"{hour}:{minute}")
 
 
     def updateGrips(self):
@@ -492,14 +511,10 @@ class MainWindow(QMainWindow):
         self.borderLayer.resize(event.size())
         self.borderLayer.setScaledContents(True)
 
-        self.clockFontSize = max(8, min(self.clockText.width() // 5, self.clockText.height() // 3))
+        self.clockFontSize = max(8, min(self.windowHeight // 4, self.windowWidth // 4))
         self.clockFont = QFont(self.fontFamily, self.clockFontSize)
-        self.clockText.resize(event.size())
-        self.clockText.setScaledContents(True)
-        self.clockText.setFont(self.clockFont)
-
-        self.blinkingColonText.resize(event.size())
-        self.blinkingColonText.setScaledContents(True)
+        self.hourText.setFont(self.clockFont)
+        self.minuteText.setFont(self.clockFont)
         self.blinkingColonText.setFont(self.clockFont)
 
         self.dateFontSize = max(8, min(self.dateText.width() // 20, self.dateText.height() // 3))
@@ -507,6 +522,8 @@ class MainWindow(QMainWindow):
         self.dateText.resize(event.size())
         self.dateText.setScaledContents(True)
         self.dateText.setFont(self.dateFont)
+
+        self.updateFontMetrics()
 
         buttonWidth = event.size().width() / 10
         buttonHeight = event.size().height() / 10

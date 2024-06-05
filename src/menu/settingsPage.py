@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 
-from lib import SwitchButton, PushButton
+from lib import PushButton
 from lib import FluentIcon as FIF
 
 from src import ListCard

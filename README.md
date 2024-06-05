@@ -38,8 +38,7 @@ iClock
 
 
 ## Table of Contents
-- [iClock](#iclock)
-  - [](#)
+
   - [Table of Contents](#table-of-contents)
   - [Installation and Usage](#installation-and-usage)
   - [Customization Options](#customization-options)

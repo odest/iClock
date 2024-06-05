@@ -40,8 +40,8 @@ class TextPage(QWidget):
         self.xCoordLabel.setStyleSheet("font: 20px 'Segoe UI'; background: transparent; color: white;")
         self.HBoxLayout2.addWidget(self.xCoordLabel)
         self.xCoordSlider = Slider(Qt.Horizontal, self)
-        self.xCoordSlider.setMinimum(int(-self.parent.width() / 2))
-        self.xCoordSlider.setMaximum(int(self.parent.width() / 2))
+        self.xCoordSlider.setMinimum(int(-(self.parent.blinkingColonWidth / 2)))
+        self.xCoordSlider.setMaximum(int(self.parent.width() - (self.parent.blinkingColonWidth / 2)))
         self.xCoordSlider.setTickInterval(1)
         self.xCoordSlider.setSingleStep(1)
         self.xCoordSlider.setValue(int(self.parent.textXCoord))
@@ -54,8 +54,8 @@ class TextPage(QWidget):
         self.yCoordLabel.setStyleSheet("font: 20px 'Segoe UI'; background: transparent; color: white;")
         self.HBoxLayout3.addWidget(self.yCoordLabel)
         self.yCoordSlider = Slider(Qt.Horizontal, self)
-        self.yCoordSlider.setMinimum(int(-self.parent.height() / 2))
-        self.yCoordSlider.setMaximum(int(self.parent.height() / 2))
+        self.yCoordSlider.setMinimum(int(-(self.parent.blinkingColonHeight / 2)))
+        self.yCoordSlider.setMaximum(int(self.parent.height() - (self.parent.blinkingColonHeight / 2)))
         self.yCoordSlider.setTickInterval(1)
         self.yCoordSlider.setSingleStep(1)
         self.yCoordSlider.setValue(int(self.parent.textYCoord))
@@ -159,7 +159,8 @@ class TextPage(QWidget):
     def updateTextColor(self, color):
         r, g, b, a = color.getRgb()
         self.parent.textColor = (r, g, b, self.parent.textColor[3])
-        self.parent.clockText.setStyleSheet(f'background-color: transparent; color: rgba{self.parent.textColor};')
+        self.parent.hourText.setStyleSheet(f"background-color: transparent; color: rgba{self.parent.textColor};")
+        self.parent.minuteText.setStyleSheet(f"background-color: transparent; color: rgba{self.parent.textColor};")
         self.parent.blinkingColonText.setStyleSheet(f'background-color: transparent; color: rgba{self.parent.textColor};')
         self.parent.dateText.setStyleSheet(f'background-color: transparent; color: rgba{self.parent.textColor};')
         self.colorPickerMiniButton.setStyleSheet("PushButton {background: rgba%s; border-radius: 5px;}" % str(self.parent.textColor))
@@ -187,24 +188,42 @@ class TextPage(QWidget):
         if whichWidget == "Size":
             self.parent.clockFontSize = value
             self.parent.clockFont = QFont(self.parent.fontFamily, self.parent.clockFontSize)
-            self.parent.clockText.setFont(self.parent.clockFont)
+            self.parent.hourText.setFont(self.parent.clockFont)
+            self.parent.minuteText.setFont(self.parent.clockFont)
             self.parent.blinkingColonText.setFont(self.parent.clockFont)
+
+            self.parent.updateFontMetrics()
 
         elif whichWidget == "X Coord":
             self.parent.textXCoord = value
-            self.parent.clockText.move(self.parent.textXCoord, self.parent.textYCoord)
+
+            self.parent.hourXCoord = int(self.parent.textXCoord - self.parent.hourWidth)
+            self.parent.hourYCoord = self.parent.textYCoord
+
+            self.parent.minuteXCoord = int(self.parent.textXCoord + self.parent.blinkingColonWidth)
+            self.parent.minuteYCoord = self.parent.textYCoord
+
             self.parent.blinkingColonText.move(self.parent.textXCoord, self.parent.textYCoord)
+            self.parent.hourText.move(self.parent.hourXCoord, self.parent.hourYCoord)
+            self.parent.minuteText.move(self.parent.minuteXCoord, self.parent.minuteYCoord)
 
         elif whichWidget == "Y Coord":
             self.parent.textYCoord = value
-            self.parent.clockText.move(self.parent.textXCoord, self.parent.textYCoord)
+
+            self.parent.hourYCoord = self.parent.textYCoord
+            self.parent.minuteYCoord = self.parent.textYCoord
+
             self.parent.blinkingColonText.move(self.parent.textXCoord, self.parent.textYCoord)
+            self.parent.hourText.move(self.parent.hourXCoord, self.parent.hourYCoord)
+            self.parent.minuteText.move(self.parent.minuteXCoord, self.parent.minuteYCoord)
 
         elif whichWidget == "Opacity":
             self.parent.textOpacity = value
             self.parent.textColor = self.parent.textColor[:-1] + (int(value * 2.55),)
             color = f"rgba{str(self.parent.textColor[:-1] + (value * 0.01,))}"
-            self.parent.clockText.setStyleSheet(f'background-color : transparent; color: {color};')
+            self.parent.hourText.setStyleSheet(f"background-color : transparent; color: {color};")
+            self.parent.minuteText.setStyleSheet(f"background-color : transparent; color: {color};")
+            self.parent.blinkingColonText.setStyleSheet(f"background-color : transparent; color: {color};")
             self.colorPickerMiniButton.setStyleSheet("PushButton {background: %s; border-radius: 5px;}" % color)
 
 
@@ -268,13 +287,16 @@ class TextPage(QWidget):
 
 
     def comboBoxSelect(self, text):
+        self.parent.user = "custom"
         self.parent.fontFamily = text
         self.parent.font = self.fontDict[text]
         self.parent.clockFont = QFont(text, self.parent.clockFontSize)
         self.parent.dateFont = QFont(text, self.parent.dateFontSize)
-        self.parent.clockText.setFont(self.parent.clockFont)
+        self.parent.hourText.setFont(self.parent.clockFont)
+        self.parent.minuteText.setFont(self.parent.clockFont)
         self.parent.dateText.setFont(self.parent.dateFont)
         self.parent.blinkingColonText.setFont(self.parent.clockFont)
+        self.parent.updateFontMetrics()
 
 
     def showInfoBar(self, type, title, content):

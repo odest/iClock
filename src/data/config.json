@@ -107,8 +107,8 @@
                 ]
             },
             "opacity": 100,
-            "xCoord": 0,
-            "yCoord": 0,
+            "xCoord": 146,
+            "yCoord": 34,
             "font": "DS-DIGIB.TTF",
             "fontFamily": "DS-Digital",
             "clockFontSize": 50,
@@ -264,8 +264,8 @@
                 ]
             },
             "opacity": 100,
-            "xCoord": 0,
-            "yCoord": 0,
+            "xCoord": 146,
+            "yCoord": 34,
             "font": "DS-DIGIB.TTF",
             "fontFamily": "DS-Digital",
             "clockFontSize": 50,
