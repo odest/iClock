@@ -37,6 +37,12 @@ class SettingsPage(QWidget):
         self.staysOnTopCard.switch.checkedChanged.connect(lambda i: self.switchEvent(i, "Stays on Top", self.staysOnTopCard.switch))
         self.mainVBoxLayout.addWidget(self.staysOnTopCard)
 
+        self.secondCard = ListCard("Show Second", self)
+        self.secondCard.switch.setChecked(self.parent.secondVisibility)
+        self.secondCard.switch.setText("")
+        self.secondCard.switch.checkedChanged.connect(lambda i: self.switchEvent(i, "Show Second", self.secondCard.switch))
+        self.mainVBoxLayout.addWidget(self.secondCard)
+
         self.blinkingColonCard = ListCard("Blinking Colon", self)
         self.blinkingColonCard.switch.setChecked(self.parent.blinkingColonAnimation)
         self.blinkingColonCard.switch.setText("")
@@ -64,6 +70,8 @@ class SettingsPage(QWidget):
         self.parent.setToolTip(self.taskbarCard.switch, 'Set whether the widget logo appears on the taskbar')
         self.parent.setToolTip(self.staysOnTopCard.title, 'Set whether the widget stays on top of other apps')
         self.parent.setToolTip(self.staysOnTopCard.switch, 'Set whether the widget stays on top of other apps')
+        self.parent.setToolTip(self.secondCard.title, 'Set second visibility')
+        self.parent.setToolTip(self.secondCard.switch, 'Set second visibility')
         self.parent.setToolTip(self.blinkingColonCard.title, 'Set whether the colon between hour and minute is visible')
         self.parent.setToolTip(self.blinkingColonCard.switch, 'Set whether the colon between hour and minute is visible')
         self.parent.setToolTip(self.advancedOptionsCard.title, 'Set whether to open advanced configuration settings')
@@ -85,6 +93,9 @@ class SettingsPage(QWidget):
                 self.parent.staysOnTop = True
                 self.parent.updateStaysOnTopEvent(self.parent)
                 self.parent.updateStaysOnTopEvent(self.menu)
+            elif value == "Show Second":
+                self.parent.secondVisibility = True
+                self.parent.secondText.setVisible(self.parent.secondVisibility)
             elif value == "Blinking Colon":
                 self.parent.blinkingColonAnimation = True
             elif value == "Advanced Options":
@@ -104,6 +115,9 @@ class SettingsPage(QWidget):
                 self.parent.staysOnTop = False
                 self.parent.updateStaysOnTopEvent(self.parent)
                 self.parent.updateStaysOnTopEvent(self.menu)
+            elif value == "Show Second":
+                self.parent.secondVisibility = False
+                self.parent.secondText.setVisible(self.parent.secondVisibility)
             elif value == "Blinking Colon":
                 self.parent.blinkingColonAnimation = False
             elif value == "Advanced Options":

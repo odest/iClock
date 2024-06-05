@@ -65,6 +65,7 @@ class MainWindow(QMainWindow):
         self.backgroundCustomGifCount = self.configData[self.user]["background"]["customGifCount"]
         self.backgroundCustomGifs = self.configData[self.user]["background"]["customGifs"]
 
+        self.secondVisibility = self.configData[self.user]["text"]["secondVisibility"]
         self.blinkingColonVisibility = self.configData[self.user]["text"]["blinkingColonVisibility"]
         self.blinkingColonAnimation = self.configData[self.user]["text"]["blinkingColonAnimation"]
         self.clockFontSize = self.configData[self.user]["text"]["clockFontSize"]
@@ -112,6 +113,10 @@ class MainWindow(QMainWindow):
 
         self.minuteText = QLabel(self)
         self.minuteText.setAlignment(Qt.AlignCenter)
+
+        self.secondText = QLabel(self)
+        self.secondText.setAlignment(Qt.AlignCenter)
+        self.secondText.setVisible(self.secondVisibility)
 
         self.topLayer = QLabel(self)
         self.topLayer.setScaledContents(True)
@@ -165,7 +170,7 @@ class MainWindow(QMainWindow):
 
         self.clockTimer = QTimer(self)
         self.clockTimer.timeout.connect(self.updateTime)
-        self.clockTimer.start(500)
+        self.clockTimer.start(1000)
 
         self.sideGrips = [SideGrip(self, Qt.LeftEdge), SideGrip(self, Qt.TopEdge), SideGrip(self, Qt.RightEdge), SideGrip(self, Qt.BottomEdge), ]
         self.cornerGrips = [QSizeGrip(self) for i in range(4)]
@@ -180,11 +185,13 @@ class MainWindow(QMainWindow):
         self.fontFamily = QFontDatabase.applicationFontFamilies(fontID)[0]
 
         self.clockFont = QFont(self.fontFamily, self.clockFontSize)
+        self.secondFont = QFont(self.fontFamily, int(self.clockFontSize / 2))
         self.dateFont = QFont(self.fontFamily, self.dateFontSize)
 
         currentTime = QTime.currentTime()
         hour = str(currentTime.hour()).zfill(2)
         minute = str(currentTime.minute()).zfill(2)
+        second = str(currentTime.second()).zfill(2)
 
         currentDate = datetime.now()
         dateString = currentDate.strftime("%d/%m/%Y")
@@ -194,6 +201,7 @@ class MainWindow(QMainWindow):
         self.blinkingColonText.setText(":")
         self.hourText.setText(hour)
         self.minuteText.setText(minute)
+        self.secondText.setText(second)
 
         self.updateFontMetrics()
         self.updateWidgets()
@@ -253,6 +261,14 @@ class MainWindow(QMainWindow):
         self.minuteYCoord = self.textYCoord
         self.minuteText.setGeometry(self.minuteXCoord, self.minuteYCoord, self.minuteWidth, self.minuteHeight)
 
+        self.secondMetrics = QFontMetrics(self.secondFont)
+        self.secondWidth = self.secondMetrics.horizontalAdvance("99")
+        self.secondHeight = self.secondMetrics.height()
+        self.secondText.setFixedSize(self.secondWidth, self.secondHeight)
+        self.secondXCoord = int(self.minuteXCoord + self.minuteWidth)
+        self.secondYCoord = int((self.textYCoord) + (self.secondHeight / 1.2))
+        self.secondText.setGeometry(self.secondXCoord, self.secondYCoord, self.secondWidth, self.secondHeight)
+
 
     def updateAnimation(self):
         """ update background gif frame animation """
@@ -270,6 +286,7 @@ class MainWindow(QMainWindow):
         currentTime = QTime.currentTime()
         hour = str(currentTime.hour()).zfill(2)
         minute = str(currentTime.minute()).zfill(2)
+        second = str(currentTime.second()).zfill(2)
 
         self.hourText.setText(hour)
         self.minuteText.setText(minute)
@@ -288,6 +305,10 @@ class MainWindow(QMainWindow):
         else:
             self.blinkingColonText.setText(":")
             self.blinkingColonVisibility = True
+
+        if self.secondVisibility:
+            self.secondText.setText(second)
+            self.secondText.setStyleSheet(f"background-color: transparent; color: rgba{self.textColor};")
 
 
     def updateGrips(self):
@@ -523,6 +544,9 @@ class MainWindow(QMainWindow):
         self.dateText.setScaledContents(True)
         self.dateText.setFont(self.dateFont)
 
+        self.secondFont = QFont(self.fontFamily, int(self.clockFontSize / 2))
+        self.secondText.setFont(self.secondFont)
+
         self.updateFontMetrics()
 
         buttonWidth = event.size().width() / 10
@@ -641,6 +665,7 @@ class MainWindow(QMainWindow):
         self.configData[self.user]["background"]["customGifCount"] = self.backgroundCustomGifCount
         self.configData[self.user]["background"]["customGifs"] = self.backgroundCustomGifs
 
+        self.configData[self.user]["text"]["secondVisibility"] = self.secondVisibility
         self.configData[self.user]["text"]["blinkingColonVisibility"] = self.blinkingColonVisibility
         self.configData[self.user]["text"]["blinkingColonAnimation"] = self.blinkingColonAnimation
         self.configData[self.user]["text"]["clockFontSize"] = self.clockFontSize

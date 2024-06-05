@@ -161,6 +161,7 @@ class TextPage(QWidget):
         self.parent.textColor = (r, g, b, self.parent.textColor[3])
         self.parent.hourText.setStyleSheet(f"background-color: transparent; color: rgba{self.parent.textColor};")
         self.parent.minuteText.setStyleSheet(f"background-color: transparent; color: rgba{self.parent.textColor};")
+        self.parent.secondText.setStyleSheet(f"background-color: transparent; color: rgba{self.parent.textColor};")
         self.parent.blinkingColonText.setStyleSheet(f'background-color: transparent; color: rgba{self.parent.textColor};')
         self.parent.dateText.setStyleSheet(f'background-color: transparent; color: rgba{self.parent.textColor};')
         self.colorPickerMiniButton.setStyleSheet("PushButton {background: rgba%s; border-radius: 5px;}" % str(self.parent.textColor))
@@ -188,8 +189,10 @@ class TextPage(QWidget):
         if whichWidget == "Size":
             self.parent.clockFontSize = value
             self.parent.clockFont = QFont(self.parent.fontFamily, self.parent.clockFontSize)
+            self.parent.secondFont = QFont(self.parent.fontFamily, int(self.parent.clockFontSize / 2))
             self.parent.hourText.setFont(self.parent.clockFont)
             self.parent.minuteText.setFont(self.parent.clockFont)
+            self.parent.secondText.setFont(self.parent.secondFont)
             self.parent.blinkingColonText.setFont(self.parent.clockFont)
 
             self.parent.updateFontMetrics()
@@ -207,6 +210,12 @@ class TextPage(QWidget):
             self.parent.hourText.move(self.parent.hourXCoord, self.parent.hourYCoord)
             self.parent.minuteText.move(self.parent.minuteXCoord, self.parent.minuteYCoord)
 
+            if self.parent.secondVisibility:
+                self.parent.secondXCoord = int(self.parent.minuteXCoord + self.parent.minuteWidth)
+                self.parent.secondYCoord = int((self.parent.textYCoord) + (self.parent.secondHeight / 1.2))
+                self.parent.secondText.move(self.parent.secondXCoord, self.parent.secondYCoord)
+
+
         elif whichWidget == "Y Coord":
             self.parent.textYCoord = value
 
@@ -217,12 +226,18 @@ class TextPage(QWidget):
             self.parent.hourText.move(self.parent.hourXCoord, self.parent.hourYCoord)
             self.parent.minuteText.move(self.parent.minuteXCoord, self.parent.minuteYCoord)
 
+            if self.parent.secondVisibility:
+                self.parent.secondYCoord = int((self.parent.textYCoord) + (self.parent.secondHeight / 1.2))
+                self.parent.secondText.move(self.parent.secondXCoord, self.parent.secondYCoord)
+
+
         elif whichWidget == "Opacity":
             self.parent.textOpacity = value
             self.parent.textColor = self.parent.textColor[:-1] + (int(value * 2.55),)
             color = f"rgba{str(self.parent.textColor[:-1] + (value * 0.01,))}"
             self.parent.hourText.setStyleSheet(f"background-color : transparent; color: {color};")
             self.parent.minuteText.setStyleSheet(f"background-color : transparent; color: {color};")
+            self.parent.secondText.setStyleSheet(f"background-color : transparent; color: {color};")
             self.parent.blinkingColonText.setStyleSheet(f"background-color : transparent; color: {color};")
             self.colorPickerMiniButton.setStyleSheet("PushButton {background: %s; border-radius: 5px;}" % color)
 
@@ -291,9 +306,11 @@ class TextPage(QWidget):
         self.parent.fontFamily = text
         self.parent.font = self.fontDict[text]
         self.parent.clockFont = QFont(text, self.parent.clockFontSize)
+        self.parent.secondFont = QFont(text, int(self.parent.clockFontSize / 2))
         self.parent.dateFont = QFont(text, self.parent.dateFontSize)
         self.parent.hourText.setFont(self.parent.clockFont)
         self.parent.minuteText.setFont(self.parent.clockFont)
+        self.parent.secondText.setFont(self.parent.secondFont)
         self.parent.dateText.setFont(self.parent.dateFont)
         self.parent.blinkingColonText.setFont(self.parent.clockFont)
         self.parent.updateFontMetrics()

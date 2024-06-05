@@ -86,6 +86,7 @@
         "text": {
             "blinkingColonAnimation": false,
             "blinkingColonVisibility": true,
+            "secondVisibility": false,
             "color": {
                 "Gif": [
                     0,
@@ -243,6 +244,7 @@
         "text": {
             "blinkingColonAnimation": false,
             "blinkingColonVisibility": true,
+            "secondVisibility": false,
             "color": {
                 "Gif": [
                     0,
