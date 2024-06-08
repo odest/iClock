@@ -157,7 +157,7 @@ class TextPage(QWidget):
 
 
     def updateTextColor(self, color):
-        r, g, b, a = color.getRgb()
+        r, g, b, _ = color.getRgb()
         self.parent.textColor = (r, g, b, self.parent.textColor[3])
         self.parent.hourText.setStyleSheet(f"background-color: transparent; color: rgba{self.parent.textColor};")
         self.parent.minuteText.setStyleSheet(f"background-color: transparent; color: rgba{self.parent.textColor};")
@@ -169,13 +169,13 @@ class TextPage(QWidget):
 
     def updateNormalIconColor(self, color):
         r, g, b, _ = color.getRgb()
-        self.__tempIconNormalColor = (r, g, b)
+        self.tempIconNormalColor = (r, g, b)
         self.iconsNormalColorPickerMiniButton.setStyleSheet("PushButton {background: rgb%s; border-radius: 5px;}" % str((r, g, b)))
 
 
     def updateHoverIconColor(self, color):
         r, g, b, _ = color.getRgb()
-        self.parent.iconHoverColor = (r, g, b)
+        self.tempIconHoverColor = (r, g, b)
         self.iconsHoverColorPickerMiniButton.setStyleSheet("PushButton {background: rgb%s; border-radius: 5px;}" % str((r, g, b)))
 
 
@@ -243,26 +243,52 @@ class TextPage(QWidget):
 
 
     def showColorDialog(self, type, currentColor):
-        color_dialog = QColorDialog(QColor(*currentColor), self)
-        color_dialog.setStyleSheet("QColorDialog {background: QLinearGradient( x1: 0, y1: 0,x2: 1, y2: 0, stop: 0 rgb(7,43,71), stop: 1 rgb(12,76,125)); color: black;}")
+        colorDialog = QColorDialog(QColor(*currentColor), self)
+        colorDialog.setStyleSheet("QColorDialog {background: QLinearGradient( x1: 0, y1: 0,x2: 1, y2: 0, stop: 0 rgb(7,43,71), stop: 1 rgb(12,76,125)); color: black;}")
+        self.currentTextColor = self.parent.textColor
+        self.currentIconNormalColor = self.parent.iconNormalColor
+        self.currentIconHoverColor = self.parent.iconHoverColor
+        self.tempTextColor = self.currentTextColor
+        self.tempIconNormalColor = self.currentIconNormalColor
+        self.tempIconHoverColor = self.currentIconHoverColor
+        self.oldNormalIconColor = self.parent.iconNormalColor
+        self.oldHoverIconColor = self.parent.iconHoverColor
+
         if type == "text":
-            color_dialog.currentColorChanged.connect(self.updateTextColor)
+            colorDialog.currentColorChanged.connect(self.updateTextColor)
+
+            if colorDialog.exec_() == QColorDialog.Accepted:
+                self.tempTextColor = colorDialog.selectedColor()
+                self.currentTextColor = self.tempTextColor
+                self.updateTextColor(self.tempTextColor)
+            else:
+                self.parent.textColor = self.currentTextColor
+                self.parent.hourText.setStyleSheet(f"background-color: transparent; color: rgba{self.parent.textColor};")
+                self.parent.minuteText.setStyleSheet(f"background-color: transparent; color: rgba{self.parent.textColor};")
+                self.parent.secondText.setStyleSheet(f"background-color: transparent; color: rgba{self.parent.textColor};")
+                self.parent.blinkingColonText.setStyleSheet(f'background-color: transparent; color: rgba{self.parent.textColor};')
+                self.parent.dateText.setStyleSheet(f'background-color: transparent; color: rgba{self.parent.textColor};')
+                self.colorPickerMiniButton.setStyleSheet("PushButton {background: rgba%s; border-radius: 5px;}" % str(self.parent.textColor))
 
         elif type == "normal icon":
-            __oldNormalIconColor = self.parent.iconNormalColor
-            self.__tempIconNormalColor = None
-            color_dialog.currentColorChanged.connect(self.updateNormalIconColor)
+            colorDialog.currentColorChanged.connect(self.updateNormalIconColor)
+
+            if colorDialog.exec_() == QColorDialog.Accepted:
+                self.parent.iconNormalColor = self.tempIconNormalColor
+                self.parent.updateSVG(self.oldNormalIconColor, self.parent.iconNormalColor)
+            else:
+                self.parent.iconNormalColor = self.currentIconNormalColor
+                self.iconsNormalColorPickerMiniButton.setStyleSheet("PushButton {background: rgb%s; border-radius: 5px;}" % str(self.parent.iconNormalColor))
 
         elif type == "hover icon":
-            color_dialog.currentColorChanged.connect(self.updateHoverIconColor)
+            colorDialog.currentColorChanged.connect(self.updateHoverIconColor)
 
-        if color_dialog.exec_():
-            if type == "normal icon":
-                self.parent.iconNormalColor = self.__tempIconNormalColor
-                self.parent.updateSVG(__oldNormalIconColor, self.parent.iconNormalColor)
-        else:
-            if type == "normal icon":
-                self.iconsNormalColorPickerMiniButton.setStyleSheet("PushButton {background: rgb%s; border-radius: 5px;}" % str(__oldNormalIconColor))
+            if colorDialog.exec_() == QColorDialog.Accepted:
+                self.parent.iconHoverColor = self.tempIconHoverColor
+                self.parent.updateSVG(self.oldHoverIconColor, self.parent.iconHoverColor)
+            else:
+                self.parent.iconHoverColor = self.currentIconHoverColor
+                self.iconsHoverColorPickerMiniButton.setStyleSheet("PushButton {background: rgb%s; border-radius: 5px;}" % str((self.parent.iconHoverColor)))
 
 
     def showFileDialog(self):

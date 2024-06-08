@@ -39,7 +39,7 @@ class BackgroundPage(QWidget):
         self.filePickerMiniButton.setMaximumSize(32, 32)
         self.HBoxLayout1.addWidget(self.filePickerMiniButton)
         self.colorPickerMiniButton = PushButton(self)
-        self.colorPickerMiniButton.clicked.connect(lambda: self.showColorDialog(self.updateBackgroundColor, self.parent.backgroundColor))
+        self.colorPickerMiniButton.clicked.connect(lambda: self.showColorDialog("background color", self.parent.backgroundColor))
         self.colorPickerMiniButton.setStyleSheet("PushButton {background: rgba%s; border-radius: 5px;}" % str(self.parent.backgroundColor))
         self.colorPickerMiniButton.setMaximumSize(32, 32)
         if self.parent.backgroundType == "Color":
@@ -54,7 +54,7 @@ class BackgroundPage(QWidget):
         self.borderColorPickerButton.clicked.connect(lambda: self.showColorDialog(self.updateBorderColor, self.parent.backgroundBorderColor))
         self.HBoxLayout2.addWidget(self.borderColorPickerButton)
         self.borderColorPickerMiniButton = PushButton(self)
-        self.borderColorPickerMiniButton.clicked.connect(lambda: self.showColorDialog(self.updateBorderColor, self.parent.backgroundBorderColor))
+        self.borderColorPickerMiniButton.clicked.connect(lambda: self.showColorDialog("border color", self.parent.backgroundBorderColor))
         self.borderColorPickerMiniButton.setStyleSheet("PushButton {background: rgba%s; border-radius: 5px;}" % str(self.parent.backgroundBorderColor))
         self.borderColorPickerMiniButton.setMaximumSize(32, 32)
         self.HBoxLayout2.addWidget(self.borderColorPickerMiniButton)
@@ -178,11 +178,35 @@ class BackgroundPage(QWidget):
         self.parent.beforeRestart()
 
 
-    def showColorDialog(self, callback, currentColor):
-        color_dialog = QColorDialog(QColor(*currentColor), self)
-        color_dialog.setStyleSheet("QColorDialog {background: QLinearGradient( x1: 0, y1: 0,x2: 1, y2: 0, stop: 0 rgb(7,43,71), stop: 1 rgb(12,76,125)); color: black;}")
-        color_dialog.currentColorChanged.connect(callback)
-        color_dialog.exec_()
+    def showColorDialog(self, type, currentColor):
+        colorDialog = QColorDialog(QColor(*currentColor), self)
+        colorDialog.setStyleSheet("QColorDialog {background: QLinearGradient( x1: 0, y1: 0,x2: 1, y2: 0, stop: 0 rgb(7,43,71), stop: 1 rgb(12,76,125)); color: black;}")
+        self.currentBackgroundColor = self.parent.backgroundColor
+        self.currentBorderColor = self.parent.backgroundBorderColor
+
+        if type == "background color":
+            colorDialog.currentColorChanged.connect(self.updateBackgroundColor)
+
+            if colorDialog.exec_() == QColorDialog.Accepted:
+                self.tempBackgroundColor = colorDialog.selectedColor()
+                self.currentBackgroundColor = self.tempBackgroundColor
+                self.updateBackgroundColor(self.tempBackgroundColor)
+            else:
+                self.parent.backgroundColor = self.currentBackgroundColor
+                self.parent.backgroundLayer.setStyleSheet(f"background-color: rgba{self.parent.backgroundColor}; border-radius:{self.parent.backgroundBorderRadius}px;")
+                self.colorPickerMiniButton.setStyleSheet("PushButton {background: rgba%s; border-radius: 5px;}" % str(self.parent.backgroundColor))
+
+        elif type == "border color":
+            colorDialog.currentColorChanged.connect(self.updateBorderColor)
+
+            if colorDialog.exec_() == QColorDialog.Accepted:
+                self.tempBorderColor = colorDialog.selectedColor()
+                self.currentBorderColor = self.tempBorderColor
+                self.updateBorderColor(self.tempBorderColor)
+            else:
+                self.parent.backgroundBorderColor = self.currentBorderColor
+                self.parent.borderLayer.setStyleSheet(f'background-color: transparent; border: {self.parent.backgroundBorderSize}px solid rgba{self.parent.backgroundBorderColor}; border-radius: {self.parent.backgroundBorderRadius}')
+                self.borderColorPickerMiniButton.setStyleSheet("PushButton {background: rgba%s; border-radius: 5px;}" % str(self.parent.backgroundBorderColor))
 
 
     def showFileDialog(self):
