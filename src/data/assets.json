@@ -41,6 +41,174 @@
                 "path": "src/assets/fonts/licenses/Typefesse_SIL.txt",
                 "version": "v1.1"
             }
+        },
+        "Aerologica": {
+            "font": {
+                "name": "Aerologica",
+                "types": ["TrueType"],
+                "styles": ["Regular"],
+                "link": "https://www.fontspace.com/aerologica-font-f43859",
+                "version": "Version 1.0",
+                "extensions": [".ttf"]
+            },
+            "author": {
+                "name": "Gene Buban",
+                "webSite": "https://www.fontspace.com/gene-buban",
+                "mail": null
+            },
+            "license": {
+                "name": "Creative Commons (by-nc-nd) Attribution Non-commercial No Derivatives",
+                "link": "http://creativecommons.org/licenses/by-nc-nd/3.0/",
+                "path": "src/assets/fonts/licenses/Aerologica_Creative_Commons_(by-nc-nd)_Attribution_Non-commercial_No_Derivatives.txt",
+                "version": "3.0"
+            }
+        },
+        "ANDMOREY": {
+            "font": {
+                "name": "ANDMOREY",
+                "types": ["OpenType"],
+                "styles": ["Regular"],
+                "link": "https://befonts.com/andmorey-font.html",
+                "version": null,
+                "extensions": [".otf"]
+            },
+            "author": {
+                "name": "Enxyclo Studio",
+                "webSite": "https://enxyclo.gumroad.com",
+                "mail": "enxyclodigital@gmail.com"
+            },
+            "license": {
+                "name": "Freeware, Non-Commercial",
+                "link": null,
+                "path": "src/assets/fonts/licenses/ANDMOREY_Non-Commercial.txt",
+                "version": null
+            }
+        },
+        "Anterobot": {
+            "font": {
+                "name": "Anterobot",
+                "types": ["TrueType"],
+                "styles": ["Regular"],
+                "link": "https://www.fontspace.com/a-anterobot-font-f45684",
+                "version": "Version 001.000",
+                "extensions": [".otf", ".ttf"]
+            },
+            "author": {
+                "name": "Wahyu Eka Prasetya",
+                "webSite": "https://www.creativefabrica.com/designer/wep-wahyu-eka-prasetya/",
+                "mail": null
+            },
+            "license": {
+                "name": "Freeware, Non-Commercial",
+                "link": null,
+                "path": null,
+                "version": null
+            }
+        },
+        "ArigatouGozaimasu": {
+            "font": {
+                "name": "ArigatouGozaimasu",
+                "types": ["TrueType"],
+                "styles": ["Regular"],
+                "link": "https://www.fontspace.com/a-arigatou-gozaimasu-font-f45259",
+                "version": "Version 001.000",
+                "extensions": [".ttf"]
+            },
+            "author": {
+                "name": "Wahyu Eka Prasetya",
+                "webSite": "https://www.creativefabrica.com/designer/wep-wahyu-eka-prasetya/",
+                "mail": null
+            },
+            "license": {
+                "name": "Freeware, Non-Commercial",
+                "link": null,
+                "path": null,
+                "version": null
+            }
+        },
+        "Aquire": {
+            "font": {
+                "name": "Aquire",
+                "types": ["OpenType"],
+                "styles": ["Bold"],
+                "link": "https://www.fontspace.com/aquire-font-f43735",
+                "version": "Version 1.033",
+                "extensions": [".otf"]
+            },
+            "author": {
+                "name": "Gregory Ortiz",
+                "webSite": "https://www.sesohq.com/",
+                "mail": "Sesosedits@gmail.com"
+            },
+            "license": {
+                "name": "Freeware, Non-Commercial",
+                "link": null,
+                "path": null,
+                "version": null
+            }
+        },
+        "Banuk": {
+            "font": {
+                "name": "Banuk",
+                "types": ["TrueType"],
+                "styles": ["Regular"],
+                "link": "https://www.1001fonts.com/banuk-font.html",
+                "version": null,
+                "extensions": [".ttf"]
+            },
+            "author": {
+                "name": "Grontype",
+                "webSite": "https://www.creativefabrica.com/designer/grontype/",
+                "mail": "jarnawisaja@gmail.com"
+            },
+            "license": {
+                "name": "1001Fonts Free For Personal Use License (FFP)",
+                "link": null,
+                "path": "src/assets/fonts/licenses/Banuk_1001Fonts_Free_For-Personal_Use_License_(FFP).txt",
+                "version": null
+            }
+        },
+        "BigPixel": {
+            "font": {
+                "name": "BigPixel",
+                "types": ["TrueType"],
+                "styles": ["Regular"],
+                "link": "https://www.1001fonts.com/big-pixel-shadowed-demo-font.html",
+                "version": null,
+                "extensions": [".ttf"]
+            },
+            "author": {
+                "name": "studiotypo",
+                "webSite": "https://www.studiotypo.com/",
+                "mail": null
+            },
+            "license": {
+                "name": "Freeware, Non-Commercial",
+                "link": null,
+                "path": null,
+                "version": null
+            }
+        },
+        "BlackOpsOne": {
+            "font": {
+                "name": "BlackOpsOne",
+                "types": ["TrueType"],
+                "styles": ["Regular"],
+                "link": "https://www.1001fonts.com/black-ops-one-font.html",
+                "version": null,
+                "extensions": [".ttf"]
+            },
+            "author": {
+                "name": "James Grieshaber",
+                "webSite": "https://www.sorkintype.com/",
+                "mail": null
+            },
+            "license": {
+                "name": "SIL Open Font License",
+                "link": "http://scripts.sil.org/",
+                "path": "src/assets/fonts/licenses/BlackOpsOne_SIL.txt",
+                "version": "v1.1"
+            }
         }
     },
     "gifs": {
