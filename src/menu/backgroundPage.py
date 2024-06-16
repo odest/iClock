@@ -233,7 +233,26 @@ class BackgroundPage(QWidget):
                         self.parent.backgroundTopGif = self.parent.backgroundCustomGifs[self.hash]["top"]
                         self.parent.backgroundAnimationCounter = 1
 
-                        self.__showInfoBar("success", "SUCCESS", "Selected gif update successfully.")
+                    gif = Image.open(gifPath)
+                    width, height = gif.size
+                    aspect_ratio = width / height
+
+                    if aspect_ratio < 1:
+                        self.parent.windowWidth = 150
+                        self.parent.windowHeight = int(150 / aspect_ratio)
+                    elif aspect_ratio == 1:
+                        self.parent.windowWidth = 266
+                        self.parent.windowHeight = 266
+                    elif aspect_ratio > 1:
+                        self.parent.windowWidth = int(150 * aspect_ratio)
+                        self.parent.windowHeight = 150
+
+                    self.parent.resize(self.parent.windowWidth, self.parent.windowHeight)
+                    self.parent.updateFontMetrics()
+                    self.parent.update()
+                    self.update()
+
+                    self.__showInfoBar("success", "SUCCESS", "Selected gif update successfully.")
 
                 except Exception as e:
                         self.__showInfoBar("error", "ERROR", "Please select a valid gif file!")
@@ -248,6 +267,10 @@ class BackgroundPage(QWidget):
                         os.mkdir(targetFolder)
                     copiedImagePath = self.__copySelectedFile(imagePath, targetFolder)
 
+                    image = Image.open(imagePath)
+                    width, height = image.size
+                    aspect_ratio = width / height
+
                     if copiedImagePath:
                         self.parent.backgroundImagePath = "src/assets/images/custom/"
                         self.parent.backgroundTopImage = None
@@ -255,8 +278,6 @@ class BackgroundPage(QWidget):
                         self.parent.backgroundLayer.setStyleSheet(f"border-image: url('{self.parent.backgroundImagePath}{self.parent.backgroundNormalImage}'); border-radius:{self.parent.backgroundBorderRadius}px;")
                         self.parent.topLayer.setStyleSheet(f"background-color: transparent; border-image: url('{self.parent.backgroundImagePath}{self.parent.backgroundTopImage}'); border-radius:{self.parent.backgroundBorderRadius}px;")
                         self.parent.backgroundBlurImage = f"blur{self.parent.backgroundNormalImage}"
-
-                        image = Image.open(imagePath)
 
                         if image.format == "PNG":
                             convertedImage = image.convert('RGB')
@@ -274,9 +295,25 @@ class BackgroundPage(QWidget):
                         self.parent.topLayer.setStyleSheet(f"background-color: transparent; border-image: url('{self.parent.backgroundImagePath}{self.parent.backgroundTopImage}'); border-radius:{self.parent.backgroundBorderRadius}px;")
                         self.parent.backgroundBlurImage = f"blur{self.parent.backgroundNormalImage}"
 
+                    if aspect_ratio < 1:
+                        self.parent.windowWidth = 150
+                        self.parent.windowHeight = int(150 / aspect_ratio)
+                    elif aspect_ratio == 1:
+                        self.parent.windowWidth = 266
+                        self.parent.windowHeight = 266
+                    elif aspect_ratio > 1:
+                        self.parent.windowWidth = int(150 * aspect_ratio)
+                        self.parent.windowHeight = 150
+
+                    self.parent.resize(self.parent.windowWidth, self.parent.windowHeight)
+                    self.parent.updateFontMetrics()
+                    self.parent.update()
+                    self.update()
+
                     self.__showInfoBar("success", "SUCCESS", "Selected image applied successfully.")
 
                 except Exception as e:
+                        print(e)
                         self.__showInfoBar("error", "ERROR", "Please select a valid image file!")
 
 
